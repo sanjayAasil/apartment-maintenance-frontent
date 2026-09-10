@@ -3,9 +3,11 @@ abstract final class ApiPaths {
   static const register = '/auth/register';
   static const me = '/auth/me';
   static const users = '/users';
+  static const apartments = '/apartments';
 
   static String user(String id) => '/users/$id';
   static String userStatus(String id) => '/users/$id/status';
+  static String apartment(String id) => '/apartments/$id';
 
   static const publicPaths = {login, register};
 }

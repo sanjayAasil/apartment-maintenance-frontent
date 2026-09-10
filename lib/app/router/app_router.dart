@@ -2,6 +2,8 @@ import 'package:apartment_maintenance_frontent/core/routing/app_redirector.dart'
 import 'package:apartment_maintenance_frontent/core/routing/router_refresh_notifier.dart';
 import 'package:apartment_maintenance_frontent/core/widgets/app_shell.dart';
 import 'package:apartment_maintenance_frontent/core/widgets/info_pages.dart';
+import 'package:apartment_maintenance_frontent/features/apartments/presentation/pages/apartment_form_page.dart';
+import 'package:apartment_maintenance_frontent/features/apartments/presentation/pages/apartments_page.dart';
 import 'package:apartment_maintenance_frontent/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:apartment_maintenance_frontent/features/auth/presentation/pages/login_page.dart';
 import 'package:apartment_maintenance_frontent/features/auth/presentation/pages/register_page.dart';
@@ -45,6 +47,21 @@ GoRouter createRouter(AuthBloc authBloc) {
             path: '/users/:id',
             builder: (context, state) =>
                 UserDetailsPage(userId: state.pathParameters['id']!),
+          ),
+          GoRoute(
+            path: '/apartments',
+            builder: (context, state) => const ApartmentsPage(),
+            routes: [
+              GoRoute(
+                path: 'new',
+                builder: (context, state) => const ApartmentFormPage(),
+              ),
+              GoRoute(
+                path: ':id/edit',
+                builder: (context, state) =>
+                    ApartmentFormPage(apartmentId: state.pathParameters['id']),
+              ),
+            ],
           ),
         ],
       ),

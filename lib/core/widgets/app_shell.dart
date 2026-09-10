@@ -13,9 +13,16 @@ class AppShell extends StatelessWidget {
   Widget build(BuildContext context) {
     final wide = MediaQuery.sizeOf(context).width >= 900;
     final location = GoRouterState.of(context).uri.path;
-    final user = context.select((AuthBloc bloc) => bloc.state.user)!;
+    final user = context.select((AuthBloc bloc) => bloc.state.user);
+
+    // The auth state is cleared before GoRouter completes its redirect to the
+    // login page. Avoid building protected shell content during that frame.
+    if (user == null) {
+      return const Scaffold(body: SizedBox.shrink());
+    }
     final destinations = <_Destination>[
       const _Destination('Overview', Icons.dashboard_outlined, '/'),
+      const _Destination('Apartments', Icons.apartment_outlined, '/apartments'),
       if (RouteAccess.canManageUsers(user))
         const _Destination('Users', Icons.people_outline, '/users'),
     ];

@@ -24,6 +24,24 @@ import 'package:apartment_maintenance_frontent/core/storage/browser_token_storag
     as _i106;
 import 'package:apartment_maintenance_frontent/core/storage/token_storage.dart'
     as _i747;
+import 'package:apartment_maintenance_frontent/features/apartments/data/datasources/apartments_remote_data_source.dart'
+    as _i147;
+import 'package:apartment_maintenance_frontent/features/apartments/data/repositories/apartments_repository_impl.dart'
+    as _i381;
+import 'package:apartment_maintenance_frontent/features/apartments/domain/repositories/apartments_repository.dart'
+    as _i779;
+import 'package:apartment_maintenance_frontent/features/apartments/domain/usecases/create_apartment.dart'
+    as _i580;
+import 'package:apartment_maintenance_frontent/features/apartments/domain/usecases/get_apartment.dart'
+    as _i557;
+import 'package:apartment_maintenance_frontent/features/apartments/domain/usecases/get_apartments.dart'
+    as _i443;
+import 'package:apartment_maintenance_frontent/features/apartments/domain/usecases/update_apartment.dart'
+    as _i647;
+import 'package:apartment_maintenance_frontent/features/apartments/presentation/bloc/apartment_form_cubit.dart'
+    as _i345;
+import 'package:apartment_maintenance_frontent/features/apartments/presentation/bloc/apartments_list_bloc.dart'
+    as _i874;
 import 'package:apartment_maintenance_frontent/features/auth/data/datasources/auth_remote_data_source.dart'
     as _i838;
 import 'package:apartment_maintenance_frontent/features/auth/data/repositories/auth_repository_impl.dart'
@@ -102,6 +120,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i321.UsersRemoteDataSource>(
       () => _i321.UsersRemoteDataSourceImpl(gh<_i361.Dio>()),
     );
+    gh.lazySingleton<_i147.ApartmentsRemoteDataSource>(
+      () => _i147.ApartmentsRemoteDataSourceImpl(gh<_i361.Dio>()),
+    );
     gh.lazySingleton<_i846.UsersRepository>(
       () => _i243.UsersRepositoryImpl(gh<_i321.UsersRemoteDataSource>()),
     );
@@ -122,6 +143,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i800.UpdateUser>(
       () => _i800.UpdateUser(gh<_i846.UsersRepository>()),
     );
+    gh.lazySingleton<_i779.ApartmentsRepository>(
+      () => _i381.ApartmentsRepositoryImpl(
+        gh<_i147.ApartmentsRemoteDataSource>(),
+      ),
+    );
     gh.factory<_i796.UserDetailsBloc>(
       () => _i796.UserDetailsBloc(gh<_i865.GetUser>()),
     );
@@ -132,6 +158,21 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i203.RestoreSession>(
       () => _i203.RestoreSession(gh<_i1059.AuthRepository>()),
+    );
+    gh.factory<_i580.CreateApartment>(
+      () => _i580.CreateApartment(gh<_i779.ApartmentsRepository>()),
+    );
+    gh.factory<_i557.GetApartment>(
+      () => _i557.GetApartment(gh<_i779.ApartmentsRepository>()),
+    );
+    gh.factory<_i443.GetApartments>(
+      () => _i443.GetApartments(gh<_i779.ApartmentsRepository>()),
+    );
+    gh.factory<_i647.UpdateApartment>(
+      () => _i647.UpdateApartment(gh<_i779.ApartmentsRepository>()),
+    );
+    gh.factory<_i874.ApartmentsListBloc>(
+      () => _i874.ApartmentsListBloc(gh<_i443.GetApartments>()),
     );
     gh.lazySingleton<_i925.AuthBloc>(
       () => _i925.AuthBloc(
@@ -149,6 +190,13 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i483.UsersListBloc>(
       () => _i483.UsersListBloc(gh<_i596.GetUsers>()),
+    );
+    gh.factory<_i345.ApartmentFormCubit>(
+      () => _i345.ApartmentFormCubit(
+        gh<_i557.GetApartment>(),
+        gh<_i580.CreateApartment>(),
+        gh<_i647.UpdateApartment>(),
+      ),
     );
     gh.factory<_i478.RegistrationCubit>(
       () => _i478.RegistrationCubit(gh<_i140.Register>()),
