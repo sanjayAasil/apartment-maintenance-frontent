@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Apartment Maintenance Web
 
 Production-oriented Flutter Web frontend for the Apartment Maintenance NestJS API. The app uses Clean Architecture, feature-first modules, Material 3, BLoC, GetIt/Injectable, Dio, and go_router.
@@ -85,3 +86,6 @@ Tests use mocks and a Dio adapter; they do not require a live backend. They cove
 Deploy the contents of `build/web` over HTTPS. Configure the host to rewrite every unknown application path to `/index.html`, otherwise refreshed deep links such as `/users/:id` will return a server 404. Do not rewrite static asset requests that actually exist. Set the production API CORS allowlist to the exact deployed frontend origin.
 
 Future business modules should be added only after their controller/DTO/enum/guard contracts exist. Add one feature-first data/domain/presentation module and role-aware route/navigation entry per backend module; do not ship mock-backed production routes.
+=======
+# apartment-maintenance-frontent
+>>>>>>> 247c5086f1282b56d1f1c2149c91df5c47d0364c
