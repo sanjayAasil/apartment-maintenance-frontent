@@ -108,7 +108,9 @@ class _UsersViewState extends State<_UsersView> {
   );
 
   Widget _content(BuildContext context, UsersListState state) {
-    if (state.status == UsersListStatus.loading && state.result == null) {
+    if (state.result == null &&
+        (state.status == UsersListStatus.initial ||
+            state.status == UsersListStatus.loading)) {
       return const LoadingView(label: 'Loading users');
     }
     if (state.status == UsersListStatus.failure && state.result == null) {
@@ -122,7 +124,14 @@ class _UsersViewState extends State<_UsersView> {
         state.result?.items.isEmpty == true) {
       return const EmptyView(message: 'No users match the selected filters.');
     }
-    final result = state.result!;
+    final result = state.result;
+    if (result == null) {
+      return ErrorView(
+        message: 'Users could not be displayed.',
+        onRetry: () =>
+            context.read<UsersListBloc>().add(const UsersRequested()),
+      );
+    }
     return Card(
       clipBehavior: Clip.antiAlias,
       child: Column(
