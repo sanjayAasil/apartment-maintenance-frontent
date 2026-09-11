@@ -7,6 +7,11 @@ import 'package:apartment_maintenance_frontent/features/apartments/presentation/
 import 'package:apartment_maintenance_frontent/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:apartment_maintenance_frontent/features/auth/presentation/pages/login_page.dart';
 import 'package:apartment_maintenance_frontent/features/auth/presentation/pages/register_page.dart';
+import 'package:apartment_maintenance_frontent/features/residents/presentation/pages/add_resident_page.dart';
+import 'package:apartment_maintenance_frontent/features/residents/presentation/pages/current_resident_page.dart';
+import 'package:apartment_maintenance_frontent/features/residents/presentation/pages/edit_resident_page.dart';
+import 'package:apartment_maintenance_frontent/features/residents/presentation/pages/resident_details_page.dart';
+import 'package:apartment_maintenance_frontent/features/residents/presentation/pages/residents_page.dart';
 import 'package:apartment_maintenance_frontent/features/users/presentation/pages/user_details_page.dart';
 import 'package:apartment_maintenance_frontent/features/users/presentation/pages/users_page.dart';
 import 'package:go_router/go_router.dart';
@@ -62,6 +67,34 @@ GoRouter createRouter(AuthBloc authBloc) {
                     ApartmentFormPage(apartmentId: state.pathParameters['id']),
               ),
             ],
+          ),
+          GoRoute(
+            path: '/residents',
+            builder: (context, state) => const ResidentsPage(),
+            routes: [
+              GoRoute(
+                path: 'new',
+                builder: (context, state) => const AddResidentPage(),
+              ),
+              GoRoute(
+                path: ':id',
+                builder: (context, state) => ResidentDetailsPage(
+                  residentId: state.pathParameters['id']!,
+                ),
+                routes: [
+                  GoRoute(
+                    path: 'edit',
+                    builder: (context, state) => EditResidentPage(
+                      residentId: state.pathParameters['id']!,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          GoRoute(
+            path: '/resident/profile',
+            builder: (context, state) => const CurrentResidentPage(),
           ),
         ],
       ),

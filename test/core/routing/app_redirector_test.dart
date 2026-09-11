@@ -1,4 +1,5 @@
 import 'package:apartment_maintenance_frontent/core/routing/app_redirector.dart';
+import 'package:apartment_maintenance_frontent/features/auth/domain/entities/app_user.dart';
 import 'package:apartment_maintenance_frontent/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -70,5 +71,38 @@ void main() {
     expect(appRedirect(state, Uri.parse('/apartments')), isNull);
     expect(appRedirect(state, Uri.parse('/apartments/new')), '/forbidden');
     expect(appRedirect(state, Uri.parse('/apartments/one/edit')), '/forbidden');
+  });
+
+  test('allows admins to access resident management', () {
+    final state = const AuthState(
+      status: AuthStatus.authenticated,
+      user: adminUser,
+    );
+    expect(appRedirect(state, Uri.parse('/residents')), isNull);
+    expect(appRedirect(state, Uri.parse('/residents/new')), isNull);
+    expect(appRedirect(state, Uri.parse('/residents/one/edit')), isNull);
+  });
+
+  test('allows residents only their own resident profile route', () {
+    final state = const AuthState(
+      status: AuthStatus.authenticated,
+      user: residentUser,
+    );
+    expect(appRedirect(state, Uri.parse('/resident/profile')), isNull);
+    expect(appRedirect(state, Uri.parse('/residents')), '/forbidden');
+    expect(appRedirect(state, Uri.parse('/residents/one')), '/forbidden');
+  });
+
+  test('prevents technicians from accessing resident routes', () {
+    const technician = AppUser(
+      id: 'technician-1',
+      name: 'Tech User',
+      email: 'tech@example.com',
+      role: UserRole.technician,
+      isActive: true,
+    );
+    const state = AuthState(status: AuthStatus.authenticated, user: technician);
+    expect(appRedirect(state, Uri.parse('/residents')), '/forbidden');
+    expect(appRedirect(state, Uri.parse('/resident/profile')), '/forbidden');
   });
 }

@@ -12,6 +12,8 @@ class SafeLogInterceptor extends Interceptor {
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     // ignore: avoid_print
+    print('[HTTP] ${response.realUri}');
+    // ignore: avoid_print
     print('[HTTP] ${response.statusCode} ${response.requestOptions.uri.path}');
     handler.next(response);
   }

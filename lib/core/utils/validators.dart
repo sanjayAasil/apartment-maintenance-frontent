@@ -24,4 +24,21 @@ abstract final class Validators {
     if (value!.length < 8) return 'Password must be at least 8 characters.';
     return null;
   }
+
+  static String? phone(String? value) {
+    final required = requiredText(value, 'Phone');
+    if (required != null) return required;
+    final valid = RegExp(r'^\+?[0-9]{7,15}$').hasMatch(value!.trim());
+    return valid ? null : 'Enter 7 to 15 digits, optionally starting with +.';
+  }
+
+  static String? date(String? value, String label) {
+    final required = requiredText(value, label);
+    if (required != null) return required;
+    final parsed = DateTime.tryParse(value!.trim());
+    return parsed != null &&
+            RegExp(r'^\d{4}-\d{2}-\d{2}$').hasMatch(value.trim())
+        ? null
+        : 'Use YYYY-MM-DD format.';
+  }
 }

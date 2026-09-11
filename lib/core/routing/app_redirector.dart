@@ -35,6 +35,14 @@ String? appRedirect(AuthState auth, Uri uri) {
   if (isApartmentMutation && !RouteAccess.canManageApartments(auth.user)) {
     return '/forbidden';
   }
+  if (path.startsWith('/residents') &&
+      !RouteAccess.canManageResidents(auth.user)) {
+    return '/forbidden';
+  }
+  if (path == '/resident/profile' &&
+      !RouteAccess.canViewOwnResidentProfile(auth.user)) {
+    return '/forbidden';
+  }
   return null;
 }
 
