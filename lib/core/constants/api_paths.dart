@@ -10,6 +10,7 @@ abstract final class ApiPaths {
   static const technicians = '/technicians';
   static const availableTechnicians = '/technicians/available';
   static const currentTechnician = '/technicians/me';
+  static const maintenanceRequests = '/maintenance-requests';
 
   static String user(String id) => '/users/$id';
   static String userStatus(String id) => '/users/$id/status';
@@ -27,6 +28,9 @@ abstract final class ApiPaths {
   static String technicianSkills(String id) => '/technicians/$id/skills';
   static String technicianSkill(String id, String categoryId) =>
       '/technicians/$id/skills/$categoryId';
+  static String maintenanceRequest(String id) => '/maintenance-requests/$id';
+  static String maintenanceRequestStatus(String id) =>
+      '/maintenance-requests/$id/status';
 
   static const publicPaths = {login, register};
 }

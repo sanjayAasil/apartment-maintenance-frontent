@@ -1,5 +1,6 @@
 import 'package:apartment_maintenance_frontent/core/routing/route_access.dart';
 import 'package:apartment_maintenance_frontent/core/widgets/app_logo.dart';
+import 'package:apartment_maintenance_frontent/features/auth/domain/entities/app_user.dart';
 import 'package:apartment_maintenance_frontent/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -36,6 +37,12 @@ class AppShell extends StatelessWidget {
           'Technicians',
           Icons.engineering_outlined,
           '/technicians',
+        ),
+      if (RouteAccess.canViewMaintenanceRequests(user))
+        _Destination(
+          user.role == UserRole.resident ? 'My Requests' : 'Requests',
+          Icons.build_circle_outlined,
+          '/maintenance-requests',
         ),
       if (RouteAccess.canViewOwnResidentProfile(user))
         const _Destination(

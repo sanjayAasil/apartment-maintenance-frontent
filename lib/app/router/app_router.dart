@@ -9,6 +9,9 @@ import 'package:apartment_maintenance_frontent/features/auth/presentation/pages/
 import 'package:apartment_maintenance_frontent/features/auth/presentation/pages/register_page.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_categories/presentation/pages/maintenance_categories_page.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_categories/presentation/pages/maintenance_category_form_page.dart';
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/pages/maintenance_request_details_page.dart';
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/pages/maintenance_request_form_page.dart';
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/pages/maintenance_requests_page.dart';
 import 'package:apartment_maintenance_frontent/features/residents/presentation/pages/add_resident_page.dart';
 import 'package:apartment_maintenance_frontent/features/residents/presentation/pages/current_resident_page.dart';
 import 'package:apartment_maintenance_frontent/features/residents/presentation/pages/edit_resident_page.dart';
@@ -146,6 +149,30 @@ GoRouter createRouter(AuthBloc authBloc) {
           GoRoute(
             path: '/technician/profile',
             builder: (context, state) => const CurrentTechnicianPage(),
+          ),
+          GoRoute(
+            path: '/maintenance-requests',
+            builder: (context, state) => const MaintenanceRequestsPage(),
+            routes: [
+              GoRoute(
+                path: 'new',
+                builder: (context, state) => const MaintenanceRequestFormPage(),
+              ),
+              GoRoute(
+                path: ':id',
+                builder: (context, state) => MaintenanceRequestDetailsPage(
+                  requestId: state.pathParameters['id']!,
+                ),
+                routes: [
+                  GoRoute(
+                    path: 'edit',
+                    builder: (context, state) => MaintenanceRequestFormPage(
+                      requestId: state.pathParameters['id'],
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ],
       ),

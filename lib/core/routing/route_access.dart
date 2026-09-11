@@ -13,4 +13,8 @@ abstract final class RouteAccess {
       user?.role == UserRole.technician;
   static bool canViewOwnResidentProfile(AppUser? user) =>
       user?.role == UserRole.resident;
+  static bool canViewMaintenanceRequests(AppUser? user) =>
+      user?.role == UserRole.admin || user?.role == UserRole.resident;
+  static bool canCreateMaintenanceRequest(AppUser? user) =>
+      user?.role == UserRole.resident;
 }

@@ -80,6 +80,28 @@ import 'package:apartment_maintenance_frontent/features/maintenance_categories/p
     as _i140;
 import 'package:apartment_maintenance_frontent/features/maintenance_categories/presentation/bloc/maintenance_category_form_cubit.dart'
     as _i333;
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/data/datasources/maintenance_requests_remote_data_source.dart'
+    as _i152;
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/data/repositories/maintenance_requests_repository_impl.dart'
+    as _i212;
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/repositories/maintenance_requests_repository.dart'
+    as _i1061;
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/usecases/create_maintenance_request.dart'
+    as _i186;
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/usecases/get_maintenance_request.dart'
+    as _i230;
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/usecases/get_maintenance_requests.dart'
+    as _i376;
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/usecases/update_maintenance_request.dart'
+    as _i301;
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/usecases/update_maintenance_request_status.dart'
+    as _i628;
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/bloc/maintenance_request_details_bloc.dart'
+    as _i1036;
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/bloc/maintenance_request_form_cubit.dart'
+    as _i466;
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/bloc/maintenance_requests_list_bloc.dart'
+    as _i469;
 import 'package:apartment_maintenance_frontent/features/residents/data/datasources/residents_remote_data_source.dart'
     as _i370;
 import 'package:apartment_maintenance_frontent/features/residents/data/repositories/residents_repository_impl.dart'
@@ -201,6 +223,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i838.AuthRemoteDataSource>(
       () => _i838.AuthRemoteDataSourceImpl(gh<_i361.Dio>()),
     );
+    gh.lazySingleton<_i152.MaintenanceRequestsRemoteDataSource>(
+      () => _i152.MaintenanceRequestsRemoteDataSourceImpl(gh<_i361.Dio>()),
+    );
     gh.lazySingleton<_i809.MaintenanceCategoriesRemoteDataSource>(
       () => _i809.MaintenanceCategoriesRemoteDataSourceImpl(gh<_i361.Dio>()),
     );
@@ -222,6 +247,11 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i846.UsersRepository>(
       () => _i243.UsersRepositoryImpl(gh<_i321.UsersRemoteDataSource>()),
+    );
+    gh.lazySingleton<_i1061.MaintenanceRequestsRepository>(
+      () => _i212.MaintenanceRequestsRepositoryImpl(
+        gh<_i152.MaintenanceRequestsRemoteDataSource>(),
+      ),
     );
     gh.lazySingleton<_i295.MaintenanceCategoriesRepository>(
       () => _i818.MaintenanceCategoriesRepositoryImpl(
@@ -270,6 +300,31 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i115.UpdateResidentStatus>(
       () => _i115.UpdateResidentStatus(gh<_i985.ResidentsRepository>()),
+    );
+    gh.factory<_i186.CreateMaintenanceRequest>(
+      () => _i186.CreateMaintenanceRequest(
+        gh<_i1061.MaintenanceRequestsRepository>(),
+      ),
+    );
+    gh.factory<_i230.GetMaintenanceRequest>(
+      () => _i230.GetMaintenanceRequest(
+        gh<_i1061.MaintenanceRequestsRepository>(),
+      ),
+    );
+    gh.factory<_i376.GetMaintenanceRequests>(
+      () => _i376.GetMaintenanceRequests(
+        gh<_i1061.MaintenanceRequestsRepository>(),
+      ),
+    );
+    gh.factory<_i301.UpdateMaintenanceRequest>(
+      () => _i301.UpdateMaintenanceRequest(
+        gh<_i1061.MaintenanceRequestsRepository>(),
+      ),
+    );
+    gh.factory<_i628.UpdateMaintenanceRequestStatus>(
+      () => _i628.UpdateMaintenanceRequestStatus(
+        gh<_i1061.MaintenanceRequestsRepository>(),
+      ),
     );
     gh.lazySingleton<_i704.TechniciansRepository>(
       () => _i653.TechniciansRepositoryImpl(
@@ -408,8 +463,21 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i663.RemoveTechnicianSkill>(),
       ),
     );
+    gh.factory<_i466.MaintenanceRequestFormCubit>(
+      () => _i466.MaintenanceRequestFormCubit(
+        gh<_i230.GetMaintenanceRequest>(),
+        gh<_i99.GetMaintenanceCategories>(),
+        gh<_i186.CreateMaintenanceRequest>(),
+        gh<_i301.UpdateMaintenanceRequest>(),
+        gh<_i628.UpdateMaintenanceRequestStatus>(),
+      ),
+    );
     gh.factory<_i483.UsersListBloc>(
       () => _i483.UsersListBloc(gh<_i596.GetUsers>()),
+    );
+    gh.factory<_i469.MaintenanceRequestsListBloc>(
+      () =>
+          _i469.MaintenanceRequestsListBloc(gh<_i376.GetMaintenanceRequests>()),
     );
     gh.factory<_i734.ResidentDetailsBloc>(
       () => _i734.ResidentDetailsBloc(gh<_i800.GetResident>()),
@@ -422,6 +490,11 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i536.UpdateResident>(),
         gh<_i1024.ChangeResidentApartment>(),
         gh<_i115.UpdateResidentStatus>(),
+      ),
+    );
+    gh.factory<_i1036.MaintenanceRequestDetailsBloc>(
+      () => _i1036.MaintenanceRequestDetailsBloc(
+        gh<_i230.GetMaintenanceRequest>(),
       ),
     );
     gh.factory<_i766.CurrentResidentBloc>(

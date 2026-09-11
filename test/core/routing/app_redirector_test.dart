@@ -178,4 +178,49 @@ void main() {
       '/forbidden',
     );
   });
+
+  test(
+    'allows admin and residents to view requests, but only residents create',
+    () {
+      const adminState = AuthState(
+        status: AuthStatus.authenticated,
+        user: adminUser,
+      );
+      const residentState = AuthState(
+        status: AuthStatus.authenticated,
+        user: residentUser,
+      );
+      const technician = AppUser(
+        id: 'technician-1',
+        name: 'Tech',
+        email: 'tech@example.com',
+        role: UserRole.technician,
+        isActive: true,
+      );
+      const technicianState = AuthState(
+        status: AuthStatus.authenticated,
+        user: technician,
+      );
+      expect(
+        appRedirect(adminState, Uri.parse('/maintenance-requests')),
+        isNull,
+      );
+      expect(
+        appRedirect(residentState, Uri.parse('/maintenance-requests')),
+        isNull,
+      );
+      expect(
+        appRedirect(residentState, Uri.parse('/maintenance-requests/new')),
+        isNull,
+      );
+      expect(
+        appRedirect(adminState, Uri.parse('/maintenance-requests/new')),
+        '/forbidden',
+      );
+      expect(
+        appRedirect(technicianState, Uri.parse('/maintenance-requests')),
+        '/forbidden',
+      );
+    },
+  );
 }
