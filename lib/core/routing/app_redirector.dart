@@ -43,6 +43,14 @@ String? appRedirect(AuthState auth, Uri uri) {
       !RouteAccess.canManageMaintenanceCategories(auth.user)) {
     return '/forbidden';
   }
+  if (path.startsWith('/technicians') &&
+      !RouteAccess.canManageTechnicians(auth.user)) {
+    return '/forbidden';
+  }
+  if (path == '/technician/profile' &&
+      !RouteAccess.canViewOwnTechnicianProfile(auth.user)) {
+    return '/forbidden';
+  }
   if (path == '/resident/profile' &&
       !RouteAccess.canViewOwnResidentProfile(auth.user)) {
     return '/forbidden';

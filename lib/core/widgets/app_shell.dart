@@ -31,11 +31,23 @@ class AppShell extends StatelessWidget {
           Icons.home_repair_service_outlined,
           '/maintenance-categories',
         ),
+      if (RouteAccess.canManageTechnicians(user))
+        const _Destination(
+          'Technicians',
+          Icons.engineering_outlined,
+          '/technicians',
+        ),
       if (RouteAccess.canViewOwnResidentProfile(user))
         const _Destination(
           'My Apartment',
           Icons.home_outlined,
           '/resident/profile',
+        ),
+      if (RouteAccess.canViewOwnTechnicianProfile(user))
+        const _Destination(
+          'My Profile',
+          Icons.engineering_outlined,
+          '/technician/profile',
         ),
       if (RouteAccess.canManageUsers(user))
         const _Destination('Users', Icons.people_outline, '/users'),

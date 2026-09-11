@@ -108,6 +108,42 @@ import 'package:apartment_maintenance_frontent/features/residents/presentation/b
     as _i933;
 import 'package:apartment_maintenance_frontent/features/residents/presentation/bloc/residents_list_bloc.dart'
     as _i487;
+import 'package:apartment_maintenance_frontent/features/technicians/data/datasources/technicians_remote_data_source.dart'
+    as _i23;
+import 'package:apartment_maintenance_frontent/features/technicians/data/repositories/technicians_repository_impl.dart'
+    as _i653;
+import 'package:apartment_maintenance_frontent/features/technicians/domain/repositories/technicians_repository.dart'
+    as _i704;
+import 'package:apartment_maintenance_frontent/features/technicians/domain/usecases/add_technician_skill.dart'
+    as _i52;
+import 'package:apartment_maintenance_frontent/features/technicians/domain/usecases/create_technician.dart'
+    as _i750;
+import 'package:apartment_maintenance_frontent/features/technicians/domain/usecases/get_available_technicians.dart'
+    as _i298;
+import 'package:apartment_maintenance_frontent/features/technicians/domain/usecases/get_current_technician.dart'
+    as _i720;
+import 'package:apartment_maintenance_frontent/features/technicians/domain/usecases/get_technician.dart'
+    as _i1046;
+import 'package:apartment_maintenance_frontent/features/technicians/domain/usecases/get_technician_skills.dart'
+    as _i852;
+import 'package:apartment_maintenance_frontent/features/technicians/domain/usecases/get_technicians.dart'
+    as _i201;
+import 'package:apartment_maintenance_frontent/features/technicians/domain/usecases/remove_technician_skill.dart'
+    as _i663;
+import 'package:apartment_maintenance_frontent/features/technicians/domain/usecases/update_technician.dart'
+    as _i554;
+import 'package:apartment_maintenance_frontent/features/technicians/domain/usecases/update_technician_availability.dart'
+    as _i1056;
+import 'package:apartment_maintenance_frontent/features/technicians/domain/usecases/update_technician_status.dart'
+    as _i972;
+import 'package:apartment_maintenance_frontent/features/technicians/presentation/bloc/current_technician_cubit.dart'
+    as _i659;
+import 'package:apartment_maintenance_frontent/features/technicians/presentation/bloc/technician_details_bloc.dart'
+    as _i161;
+import 'package:apartment_maintenance_frontent/features/technicians/presentation/bloc/technician_mutation_cubit.dart'
+    as _i464;
+import 'package:apartment_maintenance_frontent/features/technicians/presentation/bloc/technicians_list_bloc.dart'
+    as _i567;
 import 'package:apartment_maintenance_frontent/features/users/data/datasources/users_remote_data_source.dart'
     as _i321;
 import 'package:apartment_maintenance_frontent/features/users/data/repositories/users_repository_impl.dart'
@@ -174,6 +210,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i321.UsersRemoteDataSource>(
       () => _i321.UsersRemoteDataSourceImpl(gh<_i361.Dio>()),
     );
+    gh.lazySingleton<_i23.TechniciansRemoteDataSource>(
+      () => _i23.TechniciansRemoteDataSourceImpl(gh<_i361.Dio>()),
+    );
     gh.lazySingleton<_i147.ApartmentsRemoteDataSource>(
       () => _i147.ApartmentsRemoteDataSourceImpl(gh<_i361.Dio>()),
     );
@@ -232,6 +271,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i115.UpdateResidentStatus>(
       () => _i115.UpdateResidentStatus(gh<_i985.ResidentsRepository>()),
     );
+    gh.lazySingleton<_i704.TechniciansRepository>(
+      () => _i653.TechniciansRepositoryImpl(
+        gh<_i23.TechniciansRemoteDataSource>(),
+      ),
+    );
     gh.factory<_i796.UserDetailsBloc>(
       () => _i796.UserDetailsBloc(gh<_i865.GetUser>()),
     );
@@ -286,12 +330,59 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i487.ResidentsListBloc>(
       () => _i487.ResidentsListBloc(gh<_i792.GetResidents>()),
     );
+    gh.factory<_i52.AddTechnicianSkill>(
+      () => _i52.AddTechnicianSkill(gh<_i704.TechniciansRepository>()),
+    );
+    gh.factory<_i750.CreateTechnician>(
+      () => _i750.CreateTechnician(gh<_i704.TechniciansRepository>()),
+    );
+    gh.factory<_i298.GetAvailableTechnicians>(
+      () => _i298.GetAvailableTechnicians(gh<_i704.TechniciansRepository>()),
+    );
+    gh.factory<_i720.GetCurrentTechnician>(
+      () => _i720.GetCurrentTechnician(gh<_i704.TechniciansRepository>()),
+    );
+    gh.factory<_i1046.GetTechnician>(
+      () => _i1046.GetTechnician(gh<_i704.TechniciansRepository>()),
+    );
+    gh.factory<_i852.GetTechnicianSkills>(
+      () => _i852.GetTechnicianSkills(gh<_i704.TechniciansRepository>()),
+    );
+    gh.factory<_i201.GetTechnicians>(
+      () => _i201.GetTechnicians(gh<_i704.TechniciansRepository>()),
+    );
+    gh.factory<_i663.RemoveTechnicianSkill>(
+      () => _i663.RemoveTechnicianSkill(gh<_i704.TechniciansRepository>()),
+    );
+    gh.factory<_i554.UpdateTechnician>(
+      () => _i554.UpdateTechnician(gh<_i704.TechniciansRepository>()),
+    );
+    gh.factory<_i1056.UpdateTechnicianAvailability>(
+      () => _i1056.UpdateTechnicianAvailability(
+        gh<_i704.TechniciansRepository>(),
+      ),
+    );
+    gh.factory<_i972.UpdateTechnicianStatus>(
+      () => _i972.UpdateTechnicianStatus(gh<_i704.TechniciansRepository>()),
+    );
+    gh.factory<_i161.TechnicianDetailsBloc>(
+      () => _i161.TechnicianDetailsBloc(gh<_i1046.GetTechnician>()),
+    );
     gh.lazySingleton<_i925.AuthBloc>(
       () => _i925.AuthBloc(
         gh<_i930.Login>(),
         gh<_i203.RestoreSession>(),
         gh<_i1007.Logout>(),
         gh<_i696.SessionCoordinator>(),
+      ),
+    );
+    gh.factory<_i567.TechniciansListBloc>(
+      () => _i567.TechniciansListBloc(gh<_i201.GetTechnicians>()),
+    );
+    gh.factory<_i659.CurrentTechnicianCubit>(
+      () => _i659.CurrentTechnicianCubit(
+        gh<_i720.GetCurrentTechnician>(),
+        gh<_i1056.UpdateTechnicianAvailability>(),
       ),
     );
     gh.factory<_i140.MaintenanceCategoriesListBloc>(
@@ -303,6 +394,18 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i799.UserEditCubit(
         gh<_i800.UpdateUser>(),
         gh<_i940.SetUserActive>(),
+      ),
+    );
+    gh.factory<_i464.TechnicianMutationCubit>(
+      () => _i464.TechnicianMutationCubit(
+        gh<_i596.GetUsers>(),
+        gh<_i99.GetMaintenanceCategories>(),
+        gh<_i750.CreateTechnician>(),
+        gh<_i554.UpdateTechnician>(),
+        gh<_i972.UpdateTechnicianStatus>(),
+        gh<_i1056.UpdateTechnicianAvailability>(),
+        gh<_i52.AddTechnicianSkill>(),
+        gh<_i663.RemoveTechnicianSkill>(),
       ),
     );
     gh.factory<_i483.UsersListBloc>(

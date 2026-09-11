@@ -140,4 +140,42 @@ void main() {
       '/forbidden',
     );
   });
+
+  test('enforces technician management and self-profile routes', () {
+    const technician = AppUser(
+      id: 'technician-1',
+      name: 'Tech User',
+      email: 'tech@example.com',
+      role: UserRole.technician,
+      isActive: true,
+    );
+    const adminState = AuthState(
+      status: AuthStatus.authenticated,
+      user: adminUser,
+    );
+    const technicianState = AuthState(
+      status: AuthStatus.authenticated,
+      user: technician,
+    );
+    const residentState = AuthState(
+      status: AuthStatus.authenticated,
+      user: residentUser,
+    );
+
+    expect(appRedirect(adminState, Uri.parse('/technicians')), isNull);
+    expect(appRedirect(adminState, Uri.parse('/technicians/new')), isNull);
+    expect(
+      appRedirect(technicianState, Uri.parse('/technicians')),
+      '/forbidden',
+    );
+    expect(
+      appRedirect(technicianState, Uri.parse('/technician/profile')),
+      isNull,
+    );
+    expect(appRedirect(residentState, Uri.parse('/technicians')), '/forbidden');
+    expect(
+      appRedirect(residentState, Uri.parse('/technician/profile')),
+      '/forbidden',
+    );
+  });
 }

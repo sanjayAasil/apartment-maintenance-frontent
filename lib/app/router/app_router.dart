@@ -14,6 +14,10 @@ import 'package:apartment_maintenance_frontent/features/residents/presentation/p
 import 'package:apartment_maintenance_frontent/features/residents/presentation/pages/edit_resident_page.dart';
 import 'package:apartment_maintenance_frontent/features/residents/presentation/pages/resident_details_page.dart';
 import 'package:apartment_maintenance_frontent/features/residents/presentation/pages/residents_page.dart';
+import 'package:apartment_maintenance_frontent/features/technicians/presentation/pages/current_technician_page.dart';
+import 'package:apartment_maintenance_frontent/features/technicians/presentation/pages/technician_details_page.dart';
+import 'package:apartment_maintenance_frontent/features/technicians/presentation/pages/technician_form_page.dart';
+import 'package:apartment_maintenance_frontent/features/technicians/presentation/pages/technicians_page.dart';
 import 'package:apartment_maintenance_frontent/features/users/presentation/pages/user_details_page.dart';
 import 'package:apartment_maintenance_frontent/features/users/presentation/pages/users_page.dart';
 import 'package:go_router/go_router.dart';
@@ -114,6 +118,34 @@ GoRouter createRouter(AuthBloc authBloc) {
                 ),
               ),
             ],
+          ),
+          GoRoute(
+            path: '/technicians',
+            builder: (context, state) => const TechniciansPage(),
+            routes: [
+              GoRoute(
+                path: 'new',
+                builder: (context, state) => const TechnicianFormPage(),
+              ),
+              GoRoute(
+                path: ':id',
+                builder: (context, state) => TechnicianDetailsPage(
+                  technicianId: state.pathParameters['id']!,
+                ),
+                routes: [
+                  GoRoute(
+                    path: 'edit',
+                    builder: (context, state) => TechnicianFormPage(
+                      technicianId: state.pathParameters['id'],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          GoRoute(
+            path: '/technician/profile',
+            builder: (context, state) => const CurrentTechnicianPage(),
           ),
         ],
       ),
