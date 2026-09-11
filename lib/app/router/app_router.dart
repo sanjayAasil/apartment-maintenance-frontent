@@ -151,6 +151,10 @@ GoRouter createRouter(AuthBloc authBloc) {
             builder: (context, state) => const CurrentTechnicianPage(),
           ),
           GoRoute(
+            path: '/technician/jobs',
+            builder: (context, state) => const MaintenanceRequestsPage(),
+          ),
+          GoRoute(
             path: '/maintenance-requests',
             builder: (context, state) => const MaintenanceRequestsPage(),
             routes: [

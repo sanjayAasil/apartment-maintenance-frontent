@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:apartment_maintenance_frontent/app/di/injection.dart';
 import 'package:apartment_maintenance_frontent/core/error/failure.dart';
+import 'package:apartment_maintenance_frontent/features/auth/domain/entities/app_user.dart';
 import 'package:apartment_maintenance_frontent/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_categories/domain/entities/maintenance_category_query.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_categories/domain/entities/paged_maintenance_categories.dart';
@@ -18,6 +19,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../../helpers/fakes.dart';
+import '../technicians/technician_fakes.dart';
 import 'maintenance_request_fakes.dart';
 
 class MockGetRequests extends Mock implements GetMaintenanceRequests {}
@@ -41,7 +43,10 @@ void main() {
   });
   tearDown(() async => getIt.reset());
 
-  Widget app(GetMaintenanceRequests get) {
+  Widget app(GetMaintenanceRequests get, {AppUser? user}) {
+    when(() => authBloc.state).thenReturn(
+      AuthState(status: AuthStatus.authenticated, user: user ?? residentUser),
+    );
     getIt.registerFactory<MaintenanceRequestsListBloc>(
       () => MaintenanceRequestsListBloc(get),
     );
@@ -85,6 +90,25 @@ void main() {
     await tester.pumpWidget(app(get));
     await tester.pumpAndSettle();
     expect(find.text('Leaking kitchen tap'), findsOneWidget);
+  });
+
+  testWidgets('shows the assigned jobs experience to technicians', (
+    tester,
+  ) async {
+    final get = MockGetRequests();
+    when(() => get(any())).thenAnswer(
+      (_) async => PagedMaintenanceRequests(
+        items: [assignedMaintenanceRequest],
+        total: 1,
+        page: 1,
+        pageSize: 20,
+      ),
+    );
+    await tester.pumpWidget(app(get, user: technicianUser));
+    await tester.pumpAndSettle();
+    expect(find.text('My Jobs'), findsOneWidget);
+    expect(find.text('Leaking kitchen tap'), findsOneWidget);
+    expect(find.text('New request'), findsNothing);
   });
 
   testWidgets('shows empty request state', (tester) async {

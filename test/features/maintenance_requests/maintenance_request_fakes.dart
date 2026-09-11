@@ -3,6 +3,9 @@ import 'package:apartment_maintenance_frontent/features/auth/domain/entities/app
 import 'package:apartment_maintenance_frontent/features/maintenance_categories/domain/entities/maintenance_category.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/entities/maintenance_request.dart';
 
+import '../../helpers/fakes.dart';
+import '../technicians/technician_fakes.dart';
+
 const requestUser = AppUser(
   id: 'user-1',
   name: 'Riya Resident',
@@ -45,6 +48,54 @@ MaintenanceRequest get maintenanceRequest => MaintenanceRequest(
   apartment: requestApartment,
   category: requestCategory,
 );
+
+MaintenanceAssignment get maintenanceAssignment => MaintenanceAssignment(
+  id: 'assignment-1',
+  maintenanceRequestId: 'request-1',
+  technicianId: technician.id,
+  assignedByUserId: adminUser.id,
+  assignedAt: DateTime.utc(2026, 9, 2, 10, 30),
+  isActive: true,
+  technician: technician,
+  assignedBy: adminUser,
+);
+
+MaintenanceRequest get assignedMaintenanceRequest => MaintenanceRequest(
+  id: 'request-1',
+  residentId: 'resident-1',
+  apartmentId: 'apartment-1',
+  categoryId: 'category-1',
+  title: 'Leaking kitchen tap',
+  description: 'The kitchen tap is leaking continuously.',
+  priority: MaintenancePriority.medium,
+  status: MaintenanceRequestStatus.assigned,
+  createdAt: DateTime.utc(2026, 9),
+  updatedAt: DateTime.utc(2026, 9),
+  resident: requestResident,
+  apartment: requestApartment,
+  category: requestCategory,
+  activeAssignment: maintenanceAssignment,
+);
+
+Map<String, dynamic> get maintenanceAssignmentJson => {
+  'id': 'assignment-1',
+  'maintenanceRequestId': 'request-1',
+  'technicianId': 'technician-1',
+  'assignedByUserId': 'admin-1',
+  'assignedAt': '2026-09-02T10:30:00.000Z',
+  'unassignedAt': null,
+  'isActive': true,
+  'createdAt': '2026-09-02T10:30:00.000Z',
+  'updatedAt': '2026-09-02T10:30:00.000Z',
+  'technician': technicianJson,
+  'assignedBy': {
+    'id': 'admin-1',
+    'name': 'Admin User',
+    'email': 'admin@example.com',
+    'role': 'ADMIN',
+    'isActive': true,
+  },
+};
 
 Map<String, dynamic> get maintenanceRequestJson => {
   'id': 'request-1',
@@ -90,4 +141,5 @@ Map<String, dynamic> get maintenanceRequestJson => {
     'createdAt': '2026-09-01T00:00:00.000Z',
     'updatedAt': '2026-09-01T00:00:00.000Z',
   },
+  'assignments': <dynamic>[],
 };

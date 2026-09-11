@@ -1,6 +1,7 @@
 import 'package:apartment_maintenance_frontent/features/apartments/domain/entities/apartment.dart';
 import 'package:apartment_maintenance_frontent/features/auth/domain/entities/app_user.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_categories/domain/entities/maintenance_category.dart';
+import 'package:apartment_maintenance_frontent/features/technicians/domain/entities/technician.dart';
 import 'package:equatable/equatable.dart';
 
 enum MaintenancePriority {
@@ -54,6 +55,47 @@ class MaintenanceRequestResident extends Equatable {
   List<Object?> get props => [id, userId, phone, isActive, user];
 }
 
+class MaintenanceAssignment extends Equatable {
+  const MaintenanceAssignment({
+    required this.id,
+    required this.maintenanceRequestId,
+    required this.technicianId,
+    required this.assignedByUserId,
+    required this.assignedAt,
+    required this.isActive,
+    required this.technician,
+    required this.assignedBy,
+    this.unassignedAt,
+    this.createdAt,
+    this.updatedAt,
+  });
+  final String id;
+  final String maintenanceRequestId;
+  final String technicianId;
+  final String assignedByUserId;
+  final DateTime assignedAt;
+  final DateTime? unassignedAt;
+  final bool isActive;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+  final Technician technician;
+  final AppUser assignedBy;
+  @override
+  List<Object?> get props => [
+    id,
+    maintenanceRequestId,
+    technicianId,
+    assignedByUserId,
+    assignedAt,
+    unassignedAt,
+    isActive,
+    createdAt,
+    updatedAt,
+    technician,
+    assignedBy,
+  ];
+}
+
 class MaintenanceRequest extends Equatable {
   const MaintenanceRequest({
     required this.id,
@@ -69,6 +111,7 @@ class MaintenanceRequest extends Equatable {
     required this.resident,
     required this.apartment,
     required this.category,
+    this.activeAssignment,
     this.resolvedAt,
     this.closedAt,
   });
@@ -87,6 +130,7 @@ class MaintenanceRequest extends Equatable {
   final MaintenanceRequestResident resident;
   final Apartment apartment;
   final MaintenanceCategory category;
+  final MaintenanceAssignment? activeAssignment;
   @override
   List<Object?> get props => [
     id,
@@ -104,5 +148,6 @@ class MaintenanceRequest extends Equatable {
     resident,
     apartment,
     category,
+    activeAssignment,
   ];
 }

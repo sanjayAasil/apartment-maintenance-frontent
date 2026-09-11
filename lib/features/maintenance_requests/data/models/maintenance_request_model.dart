@@ -1,6 +1,7 @@
 import 'package:apartment_maintenance_frontent/features/apartments/data/models/apartment_model.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_categories/data/models/maintenance_category_model.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/entities/maintenance_request.dart';
+import 'package:apartment_maintenance_frontent/features/technicians/data/models/technician_model.dart';
 import 'package:apartment_maintenance_frontent/features/users/data/models/user_model.dart';
 
 class MaintenanceRequestResidentModel {
@@ -35,6 +36,70 @@ class MaintenanceRequestResidentModel {
   );
 }
 
+class MaintenanceAssignmentModel {
+  const MaintenanceAssignmentModel({
+    required this.id,
+    required this.maintenanceRequestId,
+    required this.technicianId,
+    required this.assignedByUserId,
+    required this.assignedAt,
+    required this.isActive,
+    required this.technician,
+    required this.assignedBy,
+    this.unassignedAt,
+    this.createdAt,
+    this.updatedAt,
+  });
+  factory MaintenanceAssignmentModel.fromJson(Map<String, dynamic> json) =>
+      MaintenanceAssignmentModel(
+        id: json['id'] as String,
+        maintenanceRequestId: json['maintenanceRequestId'] as String,
+        technicianId: json['technicianId'] as String,
+        assignedByUserId: json['assignedByUserId'] as String,
+        assignedAt: DateTime.parse(json['assignedAt'] as String),
+        unassignedAt: json['unassignedAt'] == null
+            ? null
+            : DateTime.parse(json['unassignedAt'] as String),
+        isActive: json['isActive'] as bool,
+        createdAt: json['createdAt'] == null
+            ? null
+            : DateTime.parse(json['createdAt'] as String),
+        updatedAt: json['updatedAt'] == null
+            ? null
+            : DateTime.parse(json['updatedAt'] as String),
+        technician: TechnicianModel.fromJson(
+          Map<String, dynamic>.from(json['technician'] as Map),
+        ),
+        assignedBy: UserModel.fromJson(
+          Map<String, dynamic>.from(json['assignedBy'] as Map),
+        ),
+      );
+  final String id;
+  final String maintenanceRequestId;
+  final String technicianId;
+  final String assignedByUserId;
+  final DateTime assignedAt;
+  final DateTime? unassignedAt;
+  final bool isActive;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+  final TechnicianModel technician;
+  final UserModel assignedBy;
+  MaintenanceAssignment toEntity() => MaintenanceAssignment(
+    id: id,
+    maintenanceRequestId: maintenanceRequestId,
+    technicianId: technicianId,
+    assignedByUserId: assignedByUserId,
+    assignedAt: assignedAt,
+    unassignedAt: unassignedAt,
+    isActive: isActive,
+    createdAt: createdAt,
+    updatedAt: updatedAt,
+    technician: technician.toEntity(),
+    assignedBy: assignedBy.toEntity(),
+  );
+}
+
 class MaintenanceRequestModel {
   const MaintenanceRequestModel({
     required this.id,
@@ -52,6 +117,7 @@ class MaintenanceRequestModel {
     required this.category,
     this.resolvedAt,
     this.closedAt,
+    this.activeAssignment,
   });
   factory MaintenanceRequestModel.fromJson(Map<String, dynamic> json) =>
       MaintenanceRequestModel(
@@ -80,6 +146,13 @@ class MaintenanceRequestModel {
         category: MaintenanceCategoryModel.fromJson(
           Map<String, dynamic>.from(json['category'] as Map),
         ),
+        activeAssignment: (json['assignments'] as List? ?? const []).isEmpty
+            ? null
+            : MaintenanceAssignmentModel.fromJson(
+                Map<String, dynamic>.from(
+                  (json['assignments'] as List).first as Map,
+                ),
+              ),
       );
   final String id;
   final String residentId;
@@ -96,6 +169,7 @@ class MaintenanceRequestModel {
   final MaintenanceRequestResidentModel resident;
   final ApartmentModel apartment;
   final MaintenanceCategoryModel category;
+  final MaintenanceAssignmentModel? activeAssignment;
   MaintenanceRequest toEntity() => MaintenanceRequest(
     id: id,
     residentId: residentId,
@@ -112,6 +186,7 @@ class MaintenanceRequestModel {
     resident: resident.toEntity(),
     apartment: apartment.toEntity(),
     category: category.toEntity(),
+    activeAssignment: activeAssignment?.toEntity(),
   );
 }
 

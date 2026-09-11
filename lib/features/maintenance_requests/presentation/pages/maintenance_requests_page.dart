@@ -51,6 +51,7 @@ class _MaintenanceRequestsViewState extends State<_MaintenanceRequestsView> {
   Widget build(BuildContext context) {
     final user = context.select((AuthBloc bloc) => bloc.state.user);
     final resident = user?.role == UserRole.resident;
+    final technician = user?.role == UserRole.technician;
     return BlocBuilder<
       MaintenanceRequestsListBloc,
       MaintenanceRequestsListState
@@ -66,6 +67,8 @@ class _MaintenanceRequestsViewState extends State<_MaintenanceRequestsView> {
                   child: Text(
                     resident
                         ? 'My Maintenance Requests'
+                        : technician
+                        ? 'My Jobs'
                         : 'Maintenance Requests',
                     style: Theme.of(context).textTheme.headlineMedium,
                   ),

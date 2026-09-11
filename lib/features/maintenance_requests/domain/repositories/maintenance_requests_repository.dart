@@ -22,4 +22,15 @@ abstract interface class MaintenanceRequestsRepository {
     String id,
     MaintenanceRequestStatus status,
   );
+  Future<MaintenanceAssignment> getCurrentAssignment(String id);
+  Future<List<MaintenanceAssignment>> getAssignmentHistory(String id);
+  Future<MaintenanceAssignment> assignTechnician(
+    String id,
+    String technicianId,
+  );
+  Future<MaintenanceAssignment> reassignTechnician(
+    String id,
+    String technicianId,
+  );
+  Future<void> unassignTechnician(String id);
 }

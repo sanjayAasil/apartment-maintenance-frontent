@@ -86,16 +86,28 @@ import 'package:apartment_maintenance_frontent/features/maintenance_requests/dat
     as _i212;
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/repositories/maintenance_requests_repository.dart'
     as _i1061;
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/usecases/assign_technician.dart'
+    as _i215;
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/usecases/create_maintenance_request.dart'
     as _i186;
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/usecases/get_assignment_history.dart'
+    as _i838;
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/usecases/get_current_assignment.dart'
+    as _i674;
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/usecases/get_maintenance_request.dart'
     as _i230;
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/usecases/get_maintenance_requests.dart'
     as _i376;
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/usecases/reassign_technician.dart'
+    as _i434;
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/usecases/unassign_technician.dart'
+    as _i27;
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/usecases/update_maintenance_request.dart'
     as _i301;
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/usecases/update_maintenance_request_status.dart'
     as _i628;
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/bloc/maintenance_assignment_cubit.dart'
+    as _i130;
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/bloc/maintenance_request_details_bloc.dart'
     as _i1036;
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/bloc/maintenance_request_form_cubit.dart'
@@ -301,8 +313,21 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i115.UpdateResidentStatus>(
       () => _i115.UpdateResidentStatus(gh<_i985.ResidentsRepository>()),
     );
+    gh.factory<_i215.AssignTechnician>(
+      () => _i215.AssignTechnician(gh<_i1061.MaintenanceRequestsRepository>()),
+    );
     gh.factory<_i186.CreateMaintenanceRequest>(
       () => _i186.CreateMaintenanceRequest(
+        gh<_i1061.MaintenanceRequestsRepository>(),
+      ),
+    );
+    gh.factory<_i838.GetAssignmentHistory>(
+      () => _i838.GetAssignmentHistory(
+        gh<_i1061.MaintenanceRequestsRepository>(),
+      ),
+    );
+    gh.factory<_i674.GetCurrentAssignment>(
+      () => _i674.GetCurrentAssignment(
         gh<_i1061.MaintenanceRequestsRepository>(),
       ),
     );
@@ -315,6 +340,13 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i376.GetMaintenanceRequests(
         gh<_i1061.MaintenanceRequestsRepository>(),
       ),
+    );
+    gh.factory<_i434.ReassignTechnician>(
+      () =>
+          _i434.ReassignTechnician(gh<_i1061.MaintenanceRequestsRepository>()),
+    );
+    gh.factory<_i27.UnassignTechnician>(
+      () => _i27.UnassignTechnician(gh<_i1061.MaintenanceRequestsRepository>()),
     );
     gh.factory<_i301.UpdateMaintenanceRequest>(
       () => _i301.UpdateMaintenanceRequest(
@@ -422,6 +454,15 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i161.TechnicianDetailsBloc>(
       () => _i161.TechnicianDetailsBloc(gh<_i1046.GetTechnician>()),
+    );
+    gh.factory<_i130.MaintenanceAssignmentCubit>(
+      () => _i130.MaintenanceAssignmentCubit(
+        gh<_i298.GetAvailableTechnicians>(),
+        gh<_i838.GetAssignmentHistory>(),
+        gh<_i215.AssignTechnician>(),
+        gh<_i434.ReassignTechnician>(),
+        gh<_i27.UnassignTechnician>(),
+      ),
     );
     gh.lazySingleton<_i925.AuthBloc>(
       () => _i925.AuthBloc(

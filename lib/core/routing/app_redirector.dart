@@ -51,12 +51,21 @@ String? appRedirect(AuthState auth, Uri uri) {
       !RouteAccess.canCreateMaintenanceRequest(auth.user)) {
     return '/forbidden';
   }
+  if (path.startsWith('/maintenance-requests/') &&
+      path.endsWith('/edit') &&
+      !RouteAccess.canEditMaintenanceRequest(auth.user)) {
+    return '/forbidden';
+  }
   if (path.startsWith('/technicians') &&
       !RouteAccess.canManageTechnicians(auth.user)) {
     return '/forbidden';
   }
   if (path == '/technician/profile' &&
       !RouteAccess.canViewOwnTechnicianProfile(auth.user)) {
+    return '/forbidden';
+  }
+  if (path == '/technician/jobs' &&
+      !RouteAccess.canViewTechnicianJobs(auth.user)) {
     return '/forbidden';
   }
   if (path == '/resident/profile' &&

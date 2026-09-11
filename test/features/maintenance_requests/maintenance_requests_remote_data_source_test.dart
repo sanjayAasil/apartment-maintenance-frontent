@@ -85,4 +85,38 @@ void main() {
     await remote.updateRequest('request-1', title: 'Updated title');
     await remote.updateStatus('request-1', MaintenanceRequestStatus.cancelled);
   });
+
+  test('uses exact assignment and history contracts', () async {
+    adapter.onGet(
+      ApiPaths.maintenanceRequestAssignment('request-1'),
+      (server) => server.reply(200, maintenanceAssignmentJson),
+    );
+    adapter.onGet(
+      ApiPaths.maintenanceRequestAssignmentHistory('request-1'),
+      (server) => server.reply(200, [maintenanceAssignmentJson]),
+    );
+    adapter.onPost(
+      ApiPaths.maintenanceRequestAssign('request-1'),
+      (server) => server.reply(201, maintenanceAssignmentJson),
+      data: {'technicianId': 'technician-1'},
+    );
+    adapter.onPatch(
+      ApiPaths.maintenanceRequestAssignment('request-1'),
+      (server) => server.reply(200, maintenanceAssignmentJson),
+      data: {'technicianId': 'technician-2'},
+    );
+    adapter.onDelete(
+      ApiPaths.maintenanceRequestAssignment('request-1'),
+      (server) => server.reply(204, null),
+    );
+
+    expect(
+      (await remote.getCurrentAssignment('request-1')).technician.user.name,
+      'Tara Technician',
+    );
+    expect(await remote.getAssignmentHistory('request-1'), hasLength(1));
+    await remote.assignTechnician('request-1', 'technician-1');
+    await remote.reassignTechnician('request-1', 'technician-2');
+    await remote.unassignTechnician('request-1');
+  });
 }

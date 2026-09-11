@@ -40,9 +40,15 @@ class AppShell extends StatelessWidget {
         ),
       if (RouteAccess.canViewMaintenanceRequests(user))
         _Destination(
-          user.role == UserRole.resident ? 'My Requests' : 'Requests',
+          user.role == UserRole.resident
+              ? 'My Requests'
+              : user.role == UserRole.technician
+              ? 'My Jobs'
+              : 'Requests',
           Icons.build_circle_outlined,
-          '/maintenance-requests',
+          user.role == UserRole.technician
+              ? '/technician/jobs'
+              : '/maintenance-requests',
         ),
       if (RouteAccess.canViewOwnResidentProfile(user))
         const _Destination(
@@ -60,8 +66,12 @@ class AppShell extends StatelessWidget {
         const _Destination('Users', Icons.people_outline, '/users'),
     ];
     final selected = destinations.indexWhere(
-      (item) =>
-          item.path == '/' ? location == '/' : location.startsWith(item.path),
+      (item) => item.path == '/technician/jobs'
+          ? location == item.path ||
+                location.startsWith('/maintenance-requests/')
+          : item.path == '/'
+          ? location == '/'
+          : location.startsWith(item.path),
     );
 
     return Scaffold(

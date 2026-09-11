@@ -90,4 +90,57 @@ class MaintenanceRequestsRepositoryImpl
       throw mapApiError(error);
     }
   }
+
+  @override
+  Future<MaintenanceAssignment> getCurrentAssignment(String id) async {
+    try {
+      return (await _remote.getCurrentAssignment(id)).toEntity();
+    } catch (error) {
+      throw mapApiError(error);
+    }
+  }
+
+  @override
+  Future<List<MaintenanceAssignment>> getAssignmentHistory(String id) async {
+    try {
+      return (await _remote.getAssignmentHistory(
+        id,
+      )).map((item) => item.toEntity()).toList(growable: false);
+    } catch (error) {
+      throw mapApiError(error);
+    }
+  }
+
+  @override
+  Future<MaintenanceAssignment> assignTechnician(
+    String id,
+    String technicianId,
+  ) async {
+    try {
+      return (await _remote.assignTechnician(id, technicianId)).toEntity();
+    } catch (error) {
+      throw mapApiError(error);
+    }
+  }
+
+  @override
+  Future<MaintenanceAssignment> reassignTechnician(
+    String id,
+    String technicianId,
+  ) async {
+    try {
+      return (await _remote.reassignTechnician(id, technicianId)).toEntity();
+    } catch (error) {
+      throw mapApiError(error);
+    }
+  }
+
+  @override
+  Future<void> unassignTechnician(String id) async {
+    try {
+      await _remote.unassignTechnician(id);
+    } catch (error) {
+      throw mapApiError(error);
+    }
+  }
 }

@@ -28,6 +28,17 @@ abstract interface class MaintenanceRequestsRemoteDataSource {
     String id,
     MaintenanceRequestStatus status,
   );
+  Future<MaintenanceAssignmentModel> getCurrentAssignment(String id);
+  Future<List<MaintenanceAssignmentModel>> getAssignmentHistory(String id);
+  Future<MaintenanceAssignmentModel> assignTechnician(
+    String id,
+    String technicianId,
+  );
+  Future<MaintenanceAssignmentModel> reassignTechnician(
+    String id,
+    String technicianId,
+  );
+  Future<void> unassignTechnician(String id);
 }
 
 @LazySingleton(as: MaintenanceRequestsRemoteDataSource)
@@ -122,10 +133,71 @@ class MaintenanceRequestsRemoteDataSourceImpl
     )).data,
   );
 
+  @override
+  Future<MaintenanceAssignmentModel> getCurrentAssignment(String id) async =>
+      _decodeAssignment(
+        (await _dio.get<dynamic>(
+          ApiPaths.maintenanceRequestAssignment(id),
+        )).data,
+      );
+
+  @override
+  Future<List<MaintenanceAssignmentModel>> getAssignmentHistory(
+    String id,
+  ) async {
+    var value = (await _dio.get<dynamic>(
+      ApiPaths.maintenanceRequestAssignmentHistory(id),
+    )).data;
+    if (value is Map && value['data'] != null) value = value['data'];
+    if (value is! List) throw _malformed('assignment history');
+    return value
+        .map(
+          (item) => MaintenanceAssignmentModel.fromJson(
+            Map<String, dynamic>.from(item as Map),
+          ),
+        )
+        .toList(growable: false);
+  }
+
+  @override
+  Future<MaintenanceAssignmentModel> assignTechnician(
+    String id,
+    String technicianId,
+  ) async => _decodeAssignment(
+    (await _dio.post<dynamic>(
+      ApiPaths.maintenanceRequestAssign(id),
+      data: {'technicianId': technicianId},
+    )).data,
+  );
+
+  @override
+  Future<MaintenanceAssignmentModel> reassignTechnician(
+    String id,
+    String technicianId,
+  ) async => _decodeAssignment(
+    (await _dio.patch<dynamic>(
+      ApiPaths.maintenanceRequestAssignment(id),
+      data: {'technicianId': technicianId},
+    )).data,
+  );
+
+  @override
+  Future<void> unassignTechnician(String id) async {
+    await _dio.delete<dynamic>(ApiPaths.maintenanceRequestAssignment(id));
+  }
+
   MaintenanceRequestModel _decode(dynamic value) {
     if (value is Map && value['data'] != null) value = value['data'];
     if (value is! Map) throw _malformed('maintenance request');
     return MaintenanceRequestModel.fromJson(Map<String, dynamic>.from(value));
+  }
+
+  MaintenanceAssignmentModel _decodeAssignment(dynamic value) {
+    if (value is Map && value['data'] != null) value = value['data'];
+    if (value is! Map) throw _malformed('maintenance assignment');
+    return MaintenanceAssignmentModel.fromJson(
+      Map<String, dynamic>.from(value),
+    );
   }
 
   Failure _malformed(String subject) => Failure(
