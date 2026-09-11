@@ -60,6 +60,26 @@ import 'package:apartment_maintenance_frontent/features/auth/presentation/bloc/a
     as _i925;
 import 'package:apartment_maintenance_frontent/features/auth/presentation/bloc/registration_cubit.dart'
     as _i478;
+import 'package:apartment_maintenance_frontent/features/maintenance_categories/data/datasources/maintenance_categories_remote_data_source.dart'
+    as _i809;
+import 'package:apartment_maintenance_frontent/features/maintenance_categories/data/repositories/maintenance_categories_repository_impl.dart'
+    as _i818;
+import 'package:apartment_maintenance_frontent/features/maintenance_categories/domain/repositories/maintenance_categories_repository.dart'
+    as _i295;
+import 'package:apartment_maintenance_frontent/features/maintenance_categories/domain/usecases/create_maintenance_category.dart'
+    as _i299;
+import 'package:apartment_maintenance_frontent/features/maintenance_categories/domain/usecases/get_maintenance_categories.dart'
+    as _i99;
+import 'package:apartment_maintenance_frontent/features/maintenance_categories/domain/usecases/get_maintenance_category.dart'
+    as _i102;
+import 'package:apartment_maintenance_frontent/features/maintenance_categories/domain/usecases/update_maintenance_category.dart'
+    as _i640;
+import 'package:apartment_maintenance_frontent/features/maintenance_categories/domain/usecases/update_maintenance_category_status.dart'
+    as _i1010;
+import 'package:apartment_maintenance_frontent/features/maintenance_categories/presentation/bloc/maintenance_categories_list_bloc.dart'
+    as _i140;
+import 'package:apartment_maintenance_frontent/features/maintenance_categories/presentation/bloc/maintenance_category_form_cubit.dart'
+    as _i333;
 import 'package:apartment_maintenance_frontent/features/residents/data/datasources/residents_remote_data_source.dart'
     as _i370;
 import 'package:apartment_maintenance_frontent/features/residents/data/repositories/residents_repository_impl.dart'
@@ -145,6 +165,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i838.AuthRemoteDataSource>(
       () => _i838.AuthRemoteDataSourceImpl(gh<_i361.Dio>()),
     );
+    gh.lazySingleton<_i809.MaintenanceCategoriesRemoteDataSource>(
+      () => _i809.MaintenanceCategoriesRemoteDataSourceImpl(gh<_i361.Dio>()),
+    );
     gh.lazySingleton<_i370.ResidentsRemoteDataSource>(
       () => _i370.ResidentsRemoteDataSourceImpl(gh<_i361.Dio>()),
     );
@@ -160,6 +183,11 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i846.UsersRepository>(
       () => _i243.UsersRepositoryImpl(gh<_i321.UsersRemoteDataSource>()),
+    );
+    gh.lazySingleton<_i295.MaintenanceCategoriesRepository>(
+      () => _i818.MaintenanceCategoriesRepositoryImpl(
+        gh<_i809.MaintenanceCategoriesRemoteDataSource>(),
+      ),
     );
     gh.lazySingleton<_i1059.AuthRepository>(
       () => _i384.AuthRepositoryImpl(
@@ -215,6 +243,31 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i203.RestoreSession>(
       () => _i203.RestoreSession(gh<_i1059.AuthRepository>()),
     );
+    gh.factory<_i299.CreateMaintenanceCategory>(
+      () => _i299.CreateMaintenanceCategory(
+        gh<_i295.MaintenanceCategoriesRepository>(),
+      ),
+    );
+    gh.factory<_i99.GetMaintenanceCategories>(
+      () => _i99.GetMaintenanceCategories(
+        gh<_i295.MaintenanceCategoriesRepository>(),
+      ),
+    );
+    gh.factory<_i102.GetMaintenanceCategory>(
+      () => _i102.GetMaintenanceCategory(
+        gh<_i295.MaintenanceCategoriesRepository>(),
+      ),
+    );
+    gh.factory<_i640.UpdateMaintenanceCategory>(
+      () => _i640.UpdateMaintenanceCategory(
+        gh<_i295.MaintenanceCategoriesRepository>(),
+      ),
+    );
+    gh.factory<_i1010.UpdateMaintenanceCategoryStatus>(
+      () => _i1010.UpdateMaintenanceCategoryStatus(
+        gh<_i295.MaintenanceCategoriesRepository>(),
+      ),
+    );
     gh.factory<_i580.CreateApartment>(
       () => _i580.CreateApartment(gh<_i779.ApartmentsRepository>()),
     );
@@ -239,6 +292,11 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i203.RestoreSession>(),
         gh<_i1007.Logout>(),
         gh<_i696.SessionCoordinator>(),
+      ),
+    );
+    gh.factory<_i140.MaintenanceCategoriesListBloc>(
+      () => _i140.MaintenanceCategoriesListBloc(
+        gh<_i99.GetMaintenanceCategories>(),
       ),
     );
     gh.factory<_i799.UserEditCubit>(
@@ -275,6 +333,14 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i478.RegistrationCubit>(
       () => _i478.RegistrationCubit(gh<_i140.Register>()),
+    );
+    gh.factory<_i333.MaintenanceCategoryFormCubit>(
+      () => _i333.MaintenanceCategoryFormCubit(
+        gh<_i102.GetMaintenanceCategory>(),
+        gh<_i299.CreateMaintenanceCategory>(),
+        gh<_i640.UpdateMaintenanceCategory>(),
+        gh<_i1010.UpdateMaintenanceCategoryStatus>(),
+      ),
     );
     return this;
   }

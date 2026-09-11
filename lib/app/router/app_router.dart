@@ -7,6 +7,8 @@ import 'package:apartment_maintenance_frontent/features/apartments/presentation/
 import 'package:apartment_maintenance_frontent/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:apartment_maintenance_frontent/features/auth/presentation/pages/login_page.dart';
 import 'package:apartment_maintenance_frontent/features/auth/presentation/pages/register_page.dart';
+import 'package:apartment_maintenance_frontent/features/maintenance_categories/presentation/pages/maintenance_categories_page.dart';
+import 'package:apartment_maintenance_frontent/features/maintenance_categories/presentation/pages/maintenance_category_form_page.dart';
 import 'package:apartment_maintenance_frontent/features/residents/presentation/pages/add_resident_page.dart';
 import 'package:apartment_maintenance_frontent/features/residents/presentation/pages/current_resident_page.dart';
 import 'package:apartment_maintenance_frontent/features/residents/presentation/pages/edit_resident_page.dart';
@@ -95,6 +97,23 @@ GoRouter createRouter(AuthBloc authBloc) {
           GoRoute(
             path: '/resident/profile',
             builder: (context, state) => const CurrentResidentPage(),
+          ),
+          GoRoute(
+            path: '/maintenance-categories',
+            builder: (context, state) => const MaintenanceCategoriesPage(),
+            routes: [
+              GoRoute(
+                path: 'new',
+                builder: (context, state) =>
+                    const MaintenanceCategoryFormPage(),
+              ),
+              GoRoute(
+                path: ':id/edit',
+                builder: (context, state) => MaintenanceCategoryFormPage(
+                  categoryId: state.pathParameters['id'],
+                ),
+              ),
+            ],
           ),
         ],
       ),

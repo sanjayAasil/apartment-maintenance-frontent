@@ -25,6 +25,12 @@ class AppShell extends StatelessWidget {
       const _Destination('Apartments', Icons.apartment_outlined, '/apartments'),
       if (RouteAccess.canManageResidents(user))
         const _Destination('Residents', Icons.badge_outlined, '/residents'),
+      if (RouteAccess.canManageMaintenanceCategories(user))
+        const _Destination(
+          'Categories',
+          Icons.home_repair_service_outlined,
+          '/maintenance-categories',
+        ),
       if (RouteAccess.canViewOwnResidentProfile(user))
         const _Destination(
           'My Apartment',

@@ -105,4 +105,39 @@ void main() {
     expect(appRedirect(state, Uri.parse('/residents')), '/forbidden');
     expect(appRedirect(state, Uri.parse('/resident/profile')), '/forbidden');
   });
+
+  test('allows only admins to access category management routes', () {
+    const adminState = AuthState(
+      status: AuthStatus.authenticated,
+      user: adminUser,
+    );
+    const residentState = AuthState(
+      status: AuthStatus.authenticated,
+      user: residentUser,
+    );
+    const technician = AppUser(
+      id: 'technician-1',
+      name: 'Tech User',
+      email: 'tech@example.com',
+      role: UserRole.technician,
+      isActive: true,
+    );
+    const technicianState = AuthState(
+      status: AuthStatus.authenticated,
+      user: technician,
+    );
+
+    expect(
+      appRedirect(adminState, Uri.parse('/maintenance-categories')),
+      isNull,
+    );
+    expect(
+      appRedirect(residentState, Uri.parse('/maintenance-categories')),
+      '/forbidden',
+    );
+    expect(
+      appRedirect(technicianState, Uri.parse('/maintenance-categories/new')),
+      '/forbidden',
+    );
+  });
 }
