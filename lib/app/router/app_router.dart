@@ -12,6 +12,8 @@ import 'package:apartment_maintenance_frontent/features/maintenance_categories/p
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/pages/maintenance_request_details_page.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/pages/maintenance_request_form_page.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/pages/maintenance_requests_page.dart';
+import 'package:apartment_maintenance_frontent/features/parts/presentation/pages/part_form_page.dart';
+import 'package:apartment_maintenance_frontent/features/parts/presentation/pages/parts_page.dart';
 import 'package:apartment_maintenance_frontent/features/residents/presentation/pages/add_resident_page.dart';
 import 'package:apartment_maintenance_frontent/features/residents/presentation/pages/current_resident_page.dart';
 import 'package:apartment_maintenance_frontent/features/residents/presentation/pages/edit_resident_page.dart';
@@ -149,6 +151,21 @@ GoRouter createRouter(AuthBloc authBloc) {
           GoRoute(
             path: '/technician/profile',
             builder: (context, state) => const CurrentTechnicianPage(),
+          ),
+          GoRoute(
+            path: '/parts',
+            builder: (context, state) => const PartsPage(),
+            routes: [
+              GoRoute(
+                path: 'new',
+                builder: (context, state) => const PartFormPage(),
+              ),
+              GoRoute(
+                path: ':id/edit',
+                builder: (context, state) =>
+                    PartFormPage(partId: state.pathParameters['id']),
+              ),
+            ],
           ),
           GoRoute(
             path: '/technician/jobs',

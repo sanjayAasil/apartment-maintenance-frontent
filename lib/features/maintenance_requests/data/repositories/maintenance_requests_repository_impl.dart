@@ -4,6 +4,7 @@ import 'package:apartment_maintenance_frontent/features/maintenance_requests/dom
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/entities/maintenance_history_entry.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/entities/maintenance_request.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/entities/maintenance_request_query.dart';
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/entities/maintenance_work.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/entities/paged_maintenance_requests.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/repositories/maintenance_requests_repository.dart';
 import 'package:injectable/injectable.dart';
@@ -172,6 +173,107 @@ class MaintenanceRequestsRepositoryImpl
       return (await _remote.getHistory(
         id,
       )).map((item) => item.toEntity()).toList(growable: false);
+    } catch (error) {
+      throw mapApiError(error);
+    }
+  }
+
+  @override
+  Future<MaintenanceWorkNote?> getWorkNote(String id) async {
+    try {
+      return (await _remote.getWorkNote(id))?.toEntity();
+    } catch (error) {
+      throw mapApiError(error);
+    }
+  }
+
+  Map<String, dynamic> _workData(
+    String diagnosis,
+    String workPerformed,
+    double laborCost,
+    double otherCost,
+  ) => {
+    'diagnosis': diagnosis.trim(),
+    'workPerformed': workPerformed.trim(),
+    'laborCost': laborCost,
+    'otherCost': otherCost,
+  };
+
+  @override
+  Future<MaintenanceWorkNote> createWorkNote({
+    required String id,
+    required String diagnosis,
+    required String workPerformed,
+    required double laborCost,
+    required double otherCost,
+  }) async {
+    try {
+      return (await _remote.createWorkNote(
+        id,
+        _workData(diagnosis, workPerformed, laborCost, otherCost),
+      )).toEntity();
+    } catch (error) {
+      throw mapApiError(error);
+    }
+  }
+
+  @override
+  Future<MaintenanceWorkNote> updateWorkNote({
+    required String id,
+    required String noteId,
+    required String diagnosis,
+    required String workPerformed,
+    required double laborCost,
+    required double otherCost,
+  }) async {
+    try {
+      return (await _remote.updateWorkNote(
+        id,
+        noteId,
+        _workData(diagnosis, workPerformed, laborCost, otherCost),
+      )).toEntity();
+    } catch (error) {
+      throw mapApiError(error);
+    }
+  }
+
+  @override
+  Future<List<MaintenancePartUsage>> getPartsUsed(String id) async {
+    try {
+      return (await _remote.getPartsUsed(
+        id,
+      )).map((item) => item.toEntity()).toList(growable: false);
+    } catch (error) {
+      throw mapApiError(error);
+    }
+  }
+
+  @override
+  Future<MaintenancePartUsage> addPart(
+    String id,
+    String partId,
+    int quantity,
+  ) async {
+    try {
+      return (await _remote.addPart(id, partId, quantity)).toEntity();
+    } catch (error) {
+      throw mapApiError(error);
+    }
+  }
+
+  @override
+  Future<void> removePart(String id, String usageId) async {
+    try {
+      await _remote.removePart(id, usageId);
+    } catch (error) {
+      throw mapApiError(error);
+    }
+  }
+
+  @override
+  Future<MaintenanceCost> getCost(String id) async {
+    try {
+      return (await _remote.getCost(id)).toEntity();
     } catch (error) {
       throw mapApiError(error);
     }

@@ -104,6 +104,8 @@ import 'package:apartment_maintenance_frontent/features/maintenance_requests/dom
     as _i230;
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/usecases/get_maintenance_requests.dart'
     as _i376;
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/usecases/maintenance_work_usecases.dart'
+    as _i609;
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/usecases/reassign_technician.dart'
     as _i434;
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/usecases/unassign_technician.dart'
@@ -124,6 +126,20 @@ import 'package:apartment_maintenance_frontent/features/maintenance_requests/pre
     as _i466;
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/bloc/maintenance_requests_list_bloc.dart'
     as _i469;
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/bloc/maintenance_work_cubit.dart'
+    as _i409;
+import 'package:apartment_maintenance_frontent/features/parts/data/datasources/parts_remote_data_source.dart'
+    as _i718;
+import 'package:apartment_maintenance_frontent/features/parts/data/repositories/parts_repository_impl.dart'
+    as _i764;
+import 'package:apartment_maintenance_frontent/features/parts/domain/repositories/parts_repository.dart'
+    as _i366;
+import 'package:apartment_maintenance_frontent/features/parts/domain/usecases/parts_usecases.dart'
+    as _i66;
+import 'package:apartment_maintenance_frontent/features/parts/presentation/bloc/part_form_cubit.dart'
+    as _i424;
+import 'package:apartment_maintenance_frontent/features/parts/presentation/bloc/parts_list_bloc.dart'
+    as _i485;
 import 'package:apartment_maintenance_frontent/features/residents/data/datasources/residents_remote_data_source.dart'
     as _i370;
 import 'package:apartment_maintenance_frontent/features/residents/data/repositories/residents_repository_impl.dart'
@@ -248,6 +264,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i152.MaintenanceRequestsRemoteDataSource>(
       () => _i152.MaintenanceRequestsRemoteDataSourceImpl(gh<_i361.Dio>()),
     );
+    gh.lazySingleton<_i718.PartsRemoteDataSource>(
+      () => _i718.PartsRemoteDataSourceImpl(gh<_i361.Dio>()),
+    );
     gh.lazySingleton<_i809.MaintenanceCategoriesRemoteDataSource>(
       () => _i809.MaintenanceCategoriesRemoteDataSourceImpl(gh<_i361.Dio>()),
     );
@@ -262,6 +281,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i147.ApartmentsRemoteDataSource>(
       () => _i147.ApartmentsRemoteDataSourceImpl(gh<_i361.Dio>()),
+    );
+    gh.lazySingleton<_i366.PartsRepository>(
+      () => _i764.PartsRepositoryImpl(gh<_i718.PartsRemoteDataSource>()),
     );
     gh.lazySingleton<_i985.ResidentsRepository>(
       () =>
@@ -383,6 +405,20 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1061.MaintenanceRequestsRepository>(),
       ),
     );
+    gh.factory<_i66.GetParts>(() => _i66.GetParts(gh<_i366.PartsRepository>()));
+    gh.factory<_i66.GetPart>(() => _i66.GetPart(gh<_i366.PartsRepository>()));
+    gh.factory<_i66.CreatePart>(
+      () => _i66.CreatePart(gh<_i366.PartsRepository>()),
+    );
+    gh.factory<_i66.UpdatePart>(
+      () => _i66.UpdatePart(gh<_i366.PartsRepository>()),
+    );
+    gh.factory<_i66.UpdatePartStatus>(
+      () => _i66.UpdatePartStatus(gh<_i366.PartsRepository>()),
+    );
+    gh.factory<_i66.SetPartStock>(
+      () => _i66.SetPartStock(gh<_i366.PartsRepository>()),
+    );
     gh.lazySingleton<_i704.TechniciansRepository>(
       () => _i653.TechniciansRepositoryImpl(
         gh<_i23.TechniciansRemoteDataSource>(),
@@ -396,6 +432,33 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i796.UserDetailsBloc>(
       () => _i796.UserDetailsBloc(gh<_i865.GetUser>()),
+    );
+    gh.factory<_i609.GetMaintenanceWorkNote>(
+      () => _i609.GetMaintenanceWorkNote(
+        gh<_i1061.MaintenanceRequestsRepository>(),
+      ),
+    );
+    gh.factory<_i609.SaveMaintenanceWorkNote>(
+      () => _i609.SaveMaintenanceWorkNote(
+        gh<_i1061.MaintenanceRequestsRepository>(),
+      ),
+    );
+    gh.factory<_i609.GetMaintenanceParts>(
+      () =>
+          _i609.GetMaintenanceParts(gh<_i1061.MaintenanceRequestsRepository>()),
+    );
+    gh.factory<_i609.AddMaintenancePart>(
+      () =>
+          _i609.AddMaintenancePart(gh<_i1061.MaintenanceRequestsRepository>()),
+    );
+    gh.factory<_i609.RemoveMaintenancePart>(
+      () => _i609.RemoveMaintenancePart(
+        gh<_i1061.MaintenanceRequestsRepository>(),
+      ),
+    );
+    gh.factory<_i609.GetMaintenanceCost>(
+      () =>
+          _i609.GetMaintenanceCost(gh<_i1061.MaintenanceRequestsRepository>()),
     );
     gh.factory<_i930.Login>(() => _i930.Login(gh<_i1059.AuthRepository>()));
     gh.factory<_i1007.Logout>(() => _i1007.Logout(gh<_i1059.AuthRepository>()));
@@ -495,6 +558,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i27.UnassignTechnician>(),
       ),
     );
+    gh.factory<_i485.PartsListBloc>(
+      () => _i485.PartsListBloc(gh<_i66.GetParts>()),
+    );
     gh.lazySingleton<_i925.AuthBloc>(
       () => _i925.AuthBloc(
         gh<_i930.Login>(),
@@ -503,8 +569,28 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i696.SessionCoordinator>(),
       ),
     );
+    gh.factory<_i424.PartFormCubit>(
+      () => _i424.PartFormCubit(
+        gh<_i66.GetPart>(),
+        gh<_i66.CreatePart>(),
+        gh<_i66.UpdatePart>(),
+        gh<_i66.UpdatePartStatus>(),
+        gh<_i66.SetPartStock>(),
+      ),
+    );
     gh.factory<_i567.TechniciansListBloc>(
       () => _i567.TechniciansListBloc(gh<_i201.GetTechnicians>()),
+    );
+    gh.factory<_i409.MaintenanceWorkCubit>(
+      () => _i409.MaintenanceWorkCubit(
+        gh<_i609.GetMaintenanceWorkNote>(),
+        gh<_i609.SaveMaintenanceWorkNote>(),
+        gh<_i609.GetMaintenanceParts>(),
+        gh<_i609.AddMaintenancePart>(),
+        gh<_i609.RemoveMaintenancePart>(),
+        gh<_i609.GetMaintenanceCost>(),
+        gh<_i66.GetParts>(),
+      ),
     );
     gh.factory<_i659.CurrentTechnicianCubit>(
       () => _i659.CurrentTechnicianCubit(

@@ -226,4 +226,35 @@ void main() {
       '/forbidden',
     );
   });
+
+  test('allows only admins to manage parts inventory', () {
+    const technician = AppUser(
+      id: 'technician-1',
+      name: 'Tech',
+      email: 'tech@example.com',
+      role: UserRole.technician,
+      isActive: true,
+    );
+    expect(
+      appRedirect(
+        const AuthState(status: AuthStatus.authenticated, user: adminUser),
+        Uri.parse('/parts'),
+      ),
+      isNull,
+    );
+    expect(
+      appRedirect(
+        const AuthState(status: AuthStatus.authenticated, user: residentUser),
+        Uri.parse('/parts'),
+      ),
+      '/forbidden',
+    );
+    expect(
+      appRedirect(
+        const AuthState(status: AuthStatus.authenticated, user: technician),
+        Uri.parse('/parts/new'),
+      ),
+      '/forbidden',
+    );
+  });
 }

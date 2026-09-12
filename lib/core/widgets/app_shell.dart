@@ -38,6 +38,8 @@ class AppShell extends StatelessWidget {
           Icons.engineering_outlined,
           '/technicians',
         ),
+      if (RouteAccess.canManageParts(user))
+        const _Destination('Parts', Icons.inventory_2_outlined, '/parts'),
       if (RouteAccess.canViewMaintenanceRequests(user))
         _Destination(
           user.role == UserRole.resident

@@ -11,6 +11,7 @@ abstract final class ApiPaths {
   static const availableTechnicians = '/technicians/available';
   static const currentTechnician = '/technicians/me';
   static const maintenanceRequests = '/maintenance-requests';
+  static const parts = '/parts';
 
   static String user(String id) => '/users/$id';
   static String userStatus(String id) => '/users/$id/status';
@@ -41,6 +42,20 @@ abstract final class ApiPaths {
       '/maintenance-requests/$id/comments';
   static String maintenanceRequestHistory(String id) =>
       '/maintenance-requests/$id/history';
+  static String maintenanceRequestWorkNotes(String id) =>
+      '/maintenance-requests/$id/work-notes';
+  static String maintenanceRequestWorkNote(String id, String noteId) =>
+      '/maintenance-requests/$id/work-notes/$noteId';
+  static String maintenanceRequestParts(String id) =>
+      '/maintenance-requests/$id/parts';
+  static String maintenanceRequestPart(String id, String usageId) =>
+      '/maintenance-requests/$id/parts/$usageId';
+  static String maintenanceRequestCost(String id) =>
+      '/maintenance-requests/$id/cost';
+  static String part(String id) => '/parts/$id';
+  static String partStatus(String id) => '/parts/$id/status';
+  static String partStock(String id) => '/parts/$id/stock';
+  static const lowStockParts = '/parts/low-stock';
 
   static const publicPaths = {login, register};
 }

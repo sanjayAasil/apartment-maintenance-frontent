@@ -11,6 +11,10 @@ enum MaintenanceHistoryAction {
   commentAdded('COMMENT_ADDED', 'Comment added'),
   categoryChanged('CATEGORY_CHANGED', 'Category changed'),
   priorityChanged('PRIORITY_CHANGED', 'Priority changed'),
+  workNoteCreated('WORK_NOTE_CREATED', 'Work note created'),
+  workNoteUpdated('WORK_NOTE_UPDATED', 'Work note updated'),
+  partAdded('PART_ADDED', 'Part added'),
+  partRemoved('PART_REMOVED', 'Part removed'),
   unknown('UNKNOWN', 'Request updated');
 
   const MaintenanceHistoryAction(this.apiValue, this.label);

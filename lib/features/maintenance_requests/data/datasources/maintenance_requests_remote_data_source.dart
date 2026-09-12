@@ -2,6 +2,7 @@ import 'package:apartment_maintenance_frontent/core/constants/api_paths.dart';
 import 'package:apartment_maintenance_frontent/core/error/failure.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/data/models/maintenance_activity_models.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/data/models/maintenance_request_model.dart';
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/data/models/maintenance_work_models.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/entities/maintenance_request.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/entities/maintenance_request_query.dart';
 import 'package:dio/dio.dart';
@@ -43,6 +44,24 @@ abstract interface class MaintenanceRequestsRemoteDataSource {
   Future<List<MaintenanceCommentModel>> getComments(String id);
   Future<MaintenanceCommentModel> addComment(String id, String message);
   Future<List<MaintenanceHistoryEntryModel>> getHistory(String id);
+  Future<MaintenanceWorkNoteModel?> getWorkNote(String id);
+  Future<MaintenanceWorkNoteModel> createWorkNote(
+    String id,
+    Map<String, dynamic> data,
+  );
+  Future<MaintenanceWorkNoteModel> updateWorkNote(
+    String id,
+    String noteId,
+    Map<String, dynamic> data,
+  );
+  Future<List<MaintenancePartUsageModel>> getPartsUsed(String id);
+  Future<MaintenancePartUsageModel> addPart(
+    String id,
+    String partId,
+    int quantity,
+  );
+  Future<void> removePart(String id, String usageId);
+  Future<MaintenanceCostModel> getCost(String id);
 }
 
 @LazySingleton(as: MaintenanceRequestsRemoteDataSource)
@@ -216,6 +235,83 @@ class MaintenanceRequestsRemoteDataSourceImpl
         'maintenance history',
         MaintenanceHistoryEntryModel.fromJson,
       );
+
+  @override
+  Future<MaintenanceWorkNoteModel?> getWorkNote(String id) async {
+    var value = (await _dio.get<dynamic>(
+      ApiPaths.maintenanceRequestWorkNotes(id),
+    )).data;
+    if (value is Map && value.containsKey('data')) value = value['data'];
+    if (value == null) return null;
+    if (value is! Map) throw _malformed('maintenance work note');
+    return MaintenanceWorkNoteModel.fromJson(Map<String, dynamic>.from(value));
+  }
+
+  @override
+  Future<MaintenanceWorkNoteModel> createWorkNote(
+    String id,
+    Map<String, dynamic> data,
+  ) async => _decodeWorkNote(
+    (await _dio.post<dynamic>(
+      ApiPaths.maintenanceRequestWorkNotes(id),
+      data: data,
+    )).data,
+  );
+
+  @override
+  Future<MaintenanceWorkNoteModel> updateWorkNote(
+    String id,
+    String noteId,
+    Map<String, dynamic> data,
+  ) async => _decodeWorkNote(
+    (await _dio.patch<dynamic>(
+      ApiPaths.maintenanceRequestWorkNote(id, noteId),
+      data: data,
+    )).data,
+  );
+
+  @override
+  Future<List<MaintenancePartUsageModel>> getPartsUsed(String id) async =>
+      _decodeList(
+        (await _dio.get<dynamic>(ApiPaths.maintenanceRequestParts(id))).data,
+        'maintenance parts',
+        MaintenancePartUsageModel.fromJson,
+      );
+
+  @override
+  Future<MaintenancePartUsageModel> addPart(
+    String id,
+    String partId,
+    int quantity,
+  ) async {
+    var value = (await _dio.post<dynamic>(
+      ApiPaths.maintenanceRequestParts(id),
+      data: {'partId': partId, 'quantity': quantity},
+    )).data;
+    if (value is Map && value['data'] != null) value = value['data'];
+    if (value is! Map) throw _malformed('maintenance part usage');
+    return MaintenancePartUsageModel.fromJson(Map<String, dynamic>.from(value));
+  }
+
+  @override
+  Future<void> removePart(String id, String usageId) =>
+      _dio.delete<dynamic>(ApiPaths.maintenanceRequestPart(id, usageId));
+
+  @override
+  Future<MaintenanceCostModel> getCost(String id) async {
+    var value = (await _dio.get<dynamic>(
+      ApiPaths.maintenanceRequestCost(id),
+    )).data;
+    if (value is Map && value['data'] != null) value = value['data'];
+    if (value is! Map) throw _malformed('maintenance cost');
+    return MaintenanceCostModel.fromJson(Map<String, dynamic>.from(value));
+  }
+
+  MaintenanceWorkNoteModel _decodeWorkNote(dynamic value) {
+    if (value is Map && value['data'] != null) value = value['data'];
+    if (value is! Map) throw _malformed('maintenance work note');
+    return MaintenanceWorkNoteModel.fromJson(Map<String, dynamic>.from(value));
+  }
 
   MaintenanceRequestModel _decode(dynamic value) {
     if (value is Map && value['data'] != null) value = value['data'];

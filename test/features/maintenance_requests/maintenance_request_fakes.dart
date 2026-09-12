@@ -79,6 +79,23 @@ MaintenanceRequest get assignedMaintenanceRequest => MaintenanceRequest(
   activeAssignment: maintenanceAssignment,
 );
 
+MaintenanceRequest get inProgressMaintenanceRequest => MaintenanceRequest(
+  id: 'request-1',
+  residentId: 'resident-1',
+  apartmentId: 'apartment-1',
+  categoryId: 'category-1',
+  title: 'Leaking kitchen tap',
+  description: 'The kitchen tap is leaking continuously.',
+  priority: MaintenancePriority.medium,
+  status: MaintenanceRequestStatus.inProgress,
+  createdAt: DateTime.utc(2026, 9),
+  updatedAt: DateTime.utc(2026, 9),
+  resident: requestResident,
+  apartment: requestApartment,
+  category: requestCategory,
+  activeAssignment: maintenanceAssignment,
+);
+
 Map<String, dynamic> get maintenanceAssignmentJson => {
   'id': 'assignment-1',
   'maintenanceRequestId': 'request-1',

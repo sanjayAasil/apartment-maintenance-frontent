@@ -47,6 +47,9 @@ String? appRedirect(AuthState auth, Uri uri) {
       !RouteAccess.canViewMaintenanceRequests(auth.user)) {
     return '/forbidden';
   }
+  if (path.startsWith('/parts') && !RouteAccess.canManageParts(auth.user)) {
+    return '/forbidden';
+  }
   if (path == '/maintenance-requests/new' &&
       !RouteAccess.canCreateMaintenanceRequest(auth.user)) {
     return '/forbidden';

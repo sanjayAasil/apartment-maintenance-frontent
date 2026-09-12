@@ -24,6 +24,16 @@ String maintenanceHistoryDescription(MaintenanceHistoryEntry entry) {
       return 'Category changed from ${metadata['previousCategoryName'] ?? 'previous category'} to ${metadata['categoryName'] ?? 'new category'}';
     case MaintenanceHistoryAction.priorityChanged:
       return 'Priority changed from ${_readable(entry.oldValue)} to ${_readable(entry.newValue)}';
+    case MaintenanceHistoryAction.workNoteCreated:
+      return 'Work note added';
+    case MaintenanceHistoryAction.workNoteUpdated:
+      return 'Work note updated';
+    case MaintenanceHistoryAction.partAdded:
+      return '${metadata['quantity'] ?? ''} ${metadata['partName'] ?? 'part'} added'
+          .trim();
+    case MaintenanceHistoryAction.partRemoved:
+      return '${metadata['quantity'] ?? ''} ${metadata['partName'] ?? 'part'} removed'
+          .trim();
     case MaintenanceHistoryAction.unknown:
       return 'Request updated';
   }
