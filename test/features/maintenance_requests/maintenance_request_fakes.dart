@@ -1,6 +1,8 @@
 import 'package:apartment_maintenance_frontent/features/apartments/domain/entities/apartment.dart';
 import 'package:apartment_maintenance_frontent/features/auth/domain/entities/app_user.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_categories/domain/entities/maintenance_category.dart';
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/entities/maintenance_comment.dart';
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/entities/maintenance_history_entry.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/entities/maintenance_request.dart';
 
 import '../../helpers/fakes.dart';
@@ -142,4 +144,55 @@ Map<String, dynamic> get maintenanceRequestJson => {
     'updatedAt': '2026-09-01T00:00:00.000Z',
   },
   'assignments': <dynamic>[],
+};
+
+final maintenanceComment = MaintenanceComment(
+  id: 'comment-1',
+  maintenanceRequestId: 'request-1',
+  userId: requestUser.id,
+  message: 'The leak is getting worse.',
+  createdAt: DateTime.utc(2026, 9, 2, 10, 30),
+  updatedAt: DateTime.utc(2026, 9, 2, 10, 30),
+  author: const MaintenanceActor(
+    id: 'user-1',
+    name: 'Riya Resident',
+    role: UserRole.resident,
+  ),
+);
+
+final maintenanceHistoryEntry = MaintenanceHistoryEntry(
+  id: 'history-1',
+  maintenanceRequestId: 'request-1',
+  userId: adminUser.id,
+  action: MaintenanceHistoryAction.statusChanged,
+  oldValue: 'ASSIGNED',
+  newValue: 'IN_PROGRESS',
+  createdAt: DateTime.utc(2026, 9, 2, 11),
+  actor: const MaintenanceActor(
+    id: 'admin-1',
+    name: 'Admin User',
+    role: UserRole.admin,
+  ),
+);
+
+Map<String, dynamic> get maintenanceCommentJson => {
+  'id': 'comment-1',
+  'maintenanceRequestId': 'request-1',
+  'userId': 'user-1',
+  'message': 'The leak is getting worse.',
+  'createdAt': '2026-09-02T10:30:00.000Z',
+  'updatedAt': '2026-09-02T10:30:00.000Z',
+  'user': {'id': 'user-1', 'name': 'Riya Resident', 'role': 'RESIDENT'},
+};
+
+Map<String, dynamic> get maintenanceHistoryJson => {
+  'id': 'history-1',
+  'maintenanceRequestId': 'request-1',
+  'userId': 'admin-1',
+  'action': 'STATUS_CHANGED',
+  'oldValue': 'ASSIGNED',
+  'newValue': 'IN_PROGRESS',
+  'metadata': null,
+  'createdAt': '2026-09-02T11:00:00.000Z',
+  'user': {'id': 'admin-1', 'name': 'Admin User', 'role': 'ADMIN'},
 };

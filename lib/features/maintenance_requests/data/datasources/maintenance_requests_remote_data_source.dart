@@ -1,5 +1,6 @@
 import 'package:apartment_maintenance_frontent/core/constants/api_paths.dart';
 import 'package:apartment_maintenance_frontent/core/error/failure.dart';
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/data/models/maintenance_activity_models.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/data/models/maintenance_request_model.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/entities/maintenance_request.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/entities/maintenance_request_query.dart';
@@ -39,6 +40,9 @@ abstract interface class MaintenanceRequestsRemoteDataSource {
     String technicianId,
   );
   Future<void> unassignTechnician(String id);
+  Future<List<MaintenanceCommentModel>> getComments(String id);
+  Future<MaintenanceCommentModel> addComment(String id, String message);
+  Future<List<MaintenanceHistoryEntryModel>> getHistory(String id);
 }
 
 @LazySingleton(as: MaintenanceRequestsRemoteDataSource)
@@ -186,6 +190,33 @@ class MaintenanceRequestsRemoteDataSourceImpl
     await _dio.delete<dynamic>(ApiPaths.maintenanceRequestAssignment(id));
   }
 
+  @override
+  Future<List<MaintenanceCommentModel>> getComments(String id) async =>
+      _decodeList(
+        (await _dio.get<dynamic>(ApiPaths.maintenanceRequestComments(id))).data,
+        'maintenance comments',
+        MaintenanceCommentModel.fromJson,
+      );
+
+  @override
+  Future<MaintenanceCommentModel> addComment(String id, String message) async {
+    var value = (await _dio.post<dynamic>(
+      ApiPaths.maintenanceRequestComments(id),
+      data: {'message': message},
+    )).data;
+    if (value is Map && value['data'] != null) value = value['data'];
+    if (value is! Map) throw _malformed('maintenance comment');
+    return MaintenanceCommentModel.fromJson(Map<String, dynamic>.from(value));
+  }
+
+  @override
+  Future<List<MaintenanceHistoryEntryModel>> getHistory(String id) async =>
+      _decodeList(
+        (await _dio.get<dynamic>(ApiPaths.maintenanceRequestHistory(id))).data,
+        'maintenance history',
+        MaintenanceHistoryEntryModel.fromJson,
+      );
+
   MaintenanceRequestModel _decode(dynamic value) {
     if (value is Map && value['data'] != null) value = value['data'];
     if (value is! Map) throw _malformed('maintenance request');
@@ -198,6 +229,18 @@ class MaintenanceRequestsRemoteDataSourceImpl
     return MaintenanceAssignmentModel.fromJson(
       Map<String, dynamic>.from(value),
     );
+  }
+
+  List<T> _decodeList<T>(
+    dynamic value,
+    String subject,
+    T Function(Map<String, dynamic>) decode,
+  ) {
+    if (value is Map && value['data'] != null) value = value['data'];
+    if (value is! List) throw _malformed(subject);
+    return value
+        .map((item) => decode(Map<String, dynamic>.from(item as Map)))
+        .toList(growable: false);
   }
 
   Failure _malformed(String subject) => Failure(

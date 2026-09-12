@@ -37,6 +37,10 @@ abstract final class ApiPaths {
       '/maintenance-requests/$id/assignment';
   static String maintenanceRequestAssignmentHistory(String id) =>
       '/maintenance-requests/$id/assignment-history';
+  static String maintenanceRequestComments(String id) =>
+      '/maintenance-requests/$id/comments';
+  static String maintenanceRequestHistory(String id) =>
+      '/maintenance-requests/$id/history';
 
   static const publicPaths = {login, register};
 }

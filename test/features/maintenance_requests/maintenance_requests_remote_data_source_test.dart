@@ -119,4 +119,33 @@ void main() {
     await remote.reassignTechnician('request-1', 'technician-2');
     await remote.unassignTechnician('request-1');
   });
+
+  test('parses comments and maintenance audit history contracts', () async {
+    adapter.onGet(
+      ApiPaths.maintenanceRequestComments('request-1'),
+      (server) => server.reply(200, [maintenanceCommentJson]),
+    );
+    adapter.onPost(
+      ApiPaths.maintenanceRequestComments('request-1'),
+      (server) => server.reply(201, maintenanceCommentJson),
+      data: {'message': 'The leak is getting worse.'},
+    );
+    adapter.onGet(
+      ApiPaths.maintenanceRequestHistory('request-1'),
+      (server) => server.reply(200, [maintenanceHistoryJson]),
+    );
+
+    final comments = await remote.getComments('request-1');
+    expect(comments.single.author.name, 'Riya Resident');
+    expect(
+      (await remote.addComment(
+        'request-1',
+        'The leak is getting worse.',
+      )).message,
+      'The leak is getting worse.',
+    );
+    final history = await remote.getHistory('request-1');
+    expect(history.single.oldValue, 'ASSIGNED');
+    expect(history.single.newValue, 'IN_PROGRESS');
+  });
 }

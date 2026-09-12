@@ -1,3 +1,5 @@
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/entities/maintenance_comment.dart';
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/entities/maintenance_history_entry.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/entities/maintenance_request.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/entities/maintenance_request_query.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/entities/paged_maintenance_requests.dart';
@@ -33,4 +35,7 @@ abstract interface class MaintenanceRequestsRepository {
     String technicianId,
   );
   Future<void> unassignTechnician(String id);
+  Future<List<MaintenanceComment>> getComments(String id);
+  Future<MaintenanceComment> addComment(String id, String message);
+  Future<List<MaintenanceHistoryEntry>> getHistory(String id);
 }

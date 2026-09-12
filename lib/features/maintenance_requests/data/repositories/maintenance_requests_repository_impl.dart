@@ -1,5 +1,7 @@
 import 'package:apartment_maintenance_frontent/core/error/api_error_mapper.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/data/datasources/maintenance_requests_remote_data_source.dart';
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/entities/maintenance_comment.dart';
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/entities/maintenance_history_entry.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/entities/maintenance_request.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/entities/maintenance_request_query.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/entities/paged_maintenance_requests.dart';
@@ -139,6 +141,37 @@ class MaintenanceRequestsRepositoryImpl
   Future<void> unassignTechnician(String id) async {
     try {
       await _remote.unassignTechnician(id);
+    } catch (error) {
+      throw mapApiError(error);
+    }
+  }
+
+  @override
+  Future<List<MaintenanceComment>> getComments(String id) async {
+    try {
+      return (await _remote.getComments(
+        id,
+      )).map((item) => item.toEntity()).toList(growable: false);
+    } catch (error) {
+      throw mapApiError(error);
+    }
+  }
+
+  @override
+  Future<MaintenanceComment> addComment(String id, String message) async {
+    try {
+      return (await _remote.addComment(id, message.trim())).toEntity();
+    } catch (error) {
+      throw mapApiError(error);
+    }
+  }
+
+  @override
+  Future<List<MaintenanceHistoryEntry>> getHistory(String id) async {
+    try {
+      return (await _remote.getHistory(
+        id,
+      )).map((item) => item.toEntity()).toList(growable: false);
     } catch (error) {
       throw mapApiError(error);
     }

@@ -2,15 +2,20 @@ import 'package:apartment_maintenance_frontent/features/auth/domain/entities/app
 import 'package:apartment_maintenance_frontent/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_categories/domain/usecases/get_maintenance_categories.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/entities/maintenance_request.dart';
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/usecases/add_maintenance_comment.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/usecases/assign_technician.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/usecases/create_maintenance_request.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/usecases/get_assignment_history.dart';
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/usecases/get_maintenance_comments.dart';
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/usecases/get_maintenance_history.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/usecases/get_maintenance_request.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/usecases/reassign_technician.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/usecases/unassign_technician.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/usecases/update_maintenance_request.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/usecases/update_maintenance_request_status.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/bloc/maintenance_assignment_cubit.dart';
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/bloc/maintenance_comments_cubit.dart';
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/bloc/maintenance_history_cubit.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/bloc/maintenance_request_details_bloc.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/bloc/maintenance_request_form_cubit.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/pages/maintenance_request_details_page.dart';
@@ -47,6 +52,12 @@ class MockReassign extends Mock implements ReassignTechnician {}
 
 class MockUnassign extends Mock implements UnassignTechnician {}
 
+class MockGetComments extends Mock implements GetMaintenanceComments {}
+
+class MockAddComment extends Mock implements AddMaintenanceComment {}
+
+class MockGetMaintenanceHistory extends Mock implements GetMaintenanceHistory {}
+
 void main() {
   Widget app(AppUser user, MaintenanceRequest request) {
     final auth = MockAuthBloc();
@@ -65,6 +76,13 @@ void main() {
       (_) async =>
           request.activeAssignment == null ? [] : [maintenanceAssignment],
     );
+    final getComments = MockGetComments();
+    final addComment = MockAddComment();
+    final getMaintenanceHistory = MockGetMaintenanceHistory();
+    when(() => getComments('request-1')).thenAnswer((_) async => const []);
+    when(
+      () => getMaintenanceHistory('request-1'),
+    ).thenAnswer((_) async => const []);
 
     return MultiBlocProvider(
       providers: [
@@ -73,6 +91,12 @@ void main() {
           create: (_) =>
               MaintenanceRequestDetailsBloc(getRequest)
                 ..add(const MaintenanceRequestDetailsRequested('request-1')),
+        ),
+        BlocProvider(
+          create: (_) => MaintenanceCommentsCubit(getComments, addComment),
+        ),
+        BlocProvider(
+          create: (_) => MaintenanceHistoryCubit(getMaintenanceHistory),
         ),
         BlocProvider(
           create: (_) => MaintenanceRequestFormCubit(
@@ -105,11 +129,13 @@ void main() {
     await tester.pumpWidget(app(adminUser, maintenanceRequest));
     await tester.pumpAndSettle();
     expect(find.text('Assign technician'), findsOneWidget);
+    expect(find.text('Send'), findsOneWidget);
 
     await tester.pumpWidget(app(residentUser, maintenanceRequest));
     await tester.pumpAndSettle();
     expect(find.text('Assign technician'), findsNothing);
     expect(find.text('No technician is currently assigned.'), findsOneWidget);
+    expect(find.text('Send'), findsOneWidget);
   });
 
   testWidgets('shows semantic start action to assigned technician', (
@@ -120,6 +146,7 @@ void main() {
     expect(find.text('Tara Technician'), findsOneWidget);
     expect(find.text('Start work'), findsOneWidget);
     expect(find.text('Reassign'), findsNothing);
+    expect(find.text('Send'), findsOneWidget);
   });
 
   testWidgets('shows reassignment and assignment history to admins', (

@@ -6,8 +6,11 @@ import 'package:apartment_maintenance_frontent/features/auth/domain/entities/app
 import 'package:apartment_maintenance_frontent/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/entities/maintenance_request.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/bloc/maintenance_assignment_cubit.dart';
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/bloc/maintenance_comments_cubit.dart';
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/bloc/maintenance_history_cubit.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/bloc/maintenance_request_details_bloc.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/bloc/maintenance_request_form_cubit.dart';
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/widgets/maintenance_activity_sections.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -25,6 +28,8 @@ class MaintenanceRequestDetailsPage extends StatelessWidget {
       ),
       BlocProvider(create: (_) => getIt<MaintenanceRequestFormCubit>()),
       BlocProvider(create: (_) => getIt<MaintenanceAssignmentCubit>()),
+      BlocProvider(create: (_) => getIt<MaintenanceCommentsCubit>()),
+      BlocProvider(create: (_) => getIt<MaintenanceHistoryCubit>()),
     ],
     child: BlocListener<MaintenanceAssignmentCubit, MaintenanceAssignmentState>(
       listener: (context, state) {
@@ -179,6 +184,8 @@ class MaintenanceRequestDetailsView extends StatelessWidget {
                         _AssignmentSummary(
                           assignment: request.activeAssignment,
                         ),
+                      const SizedBox(height: 20),
+                      MaintenanceActivitySections(requestId: request.id),
                       const SizedBox(height: 20),
                       _actions(context, request, user),
                     ],

@@ -86,6 +86,8 @@ import 'package:apartment_maintenance_frontent/features/maintenance_requests/dat
     as _i212;
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/repositories/maintenance_requests_repository.dart'
     as _i1061;
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/usecases/add_maintenance_comment.dart'
+    as _i996;
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/usecases/assign_technician.dart'
     as _i215;
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/usecases/create_maintenance_request.dart'
@@ -94,6 +96,10 @@ import 'package:apartment_maintenance_frontent/features/maintenance_requests/dom
     as _i838;
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/usecases/get_current_assignment.dart'
     as _i674;
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/usecases/get_maintenance_comments.dart'
+    as _i703;
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/usecases/get_maintenance_history.dart'
+    as _i446;
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/usecases/get_maintenance_request.dart'
     as _i230;
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/usecases/get_maintenance_requests.dart'
@@ -108,6 +114,10 @@ import 'package:apartment_maintenance_frontent/features/maintenance_requests/dom
     as _i628;
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/bloc/maintenance_assignment_cubit.dart'
     as _i130;
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/bloc/maintenance_comments_cubit.dart'
+    as _i435;
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/bloc/maintenance_history_cubit.dart'
+    as _i1018;
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/bloc/maintenance_request_details_bloc.dart'
     as _i1036;
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/bloc/maintenance_request_form_cubit.dart'
@@ -313,6 +323,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i115.UpdateResidentStatus>(
       () => _i115.UpdateResidentStatus(gh<_i985.ResidentsRepository>()),
     );
+    gh.factory<_i996.AddMaintenanceComment>(
+      () => _i996.AddMaintenanceComment(
+        gh<_i1061.MaintenanceRequestsRepository>(),
+      ),
+    );
     gh.factory<_i215.AssignTechnician>(
       () => _i215.AssignTechnician(gh<_i1061.MaintenanceRequestsRepository>()),
     );
@@ -328,6 +343,16 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i674.GetCurrentAssignment>(
       () => _i674.GetCurrentAssignment(
+        gh<_i1061.MaintenanceRequestsRepository>(),
+      ),
+    );
+    gh.factory<_i703.GetMaintenanceComments>(
+      () => _i703.GetMaintenanceComments(
+        gh<_i1061.MaintenanceRequestsRepository>(),
+      ),
+    );
+    gh.factory<_i446.GetMaintenanceHistory>(
+      () => _i446.GetMaintenanceHistory(
         gh<_i1061.MaintenanceRequestsRepository>(),
       ),
     );
@@ -361,6 +386,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i704.TechniciansRepository>(
       () => _i653.TechniciansRepositoryImpl(
         gh<_i23.TechniciansRemoteDataSource>(),
+      ),
+    );
+    gh.factory<_i435.MaintenanceCommentsCubit>(
+      () => _i435.MaintenanceCommentsCubit(
+        gh<_i703.GetMaintenanceComments>(),
+        gh<_i996.AddMaintenanceComment>(),
       ),
     );
     gh.factory<_i796.UserDetailsBloc>(
@@ -503,6 +534,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i52.AddTechnicianSkill>(),
         gh<_i663.RemoveTechnicianSkill>(),
       ),
+    );
+    gh.factory<_i1018.MaintenanceHistoryCubit>(
+      () => _i1018.MaintenanceHistoryCubit(gh<_i446.GetMaintenanceHistory>()),
     );
     gh.factory<_i466.MaintenanceRequestFormCubit>(
       () => _i466.MaintenanceRequestFormCubit(
