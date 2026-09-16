@@ -1,6 +1,7 @@
 import 'package:apartment_maintenance_frontent/core/error/api_error_mapper.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/data/datasources/maintenance_requests_remote_data_source.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/entities/maintenance_comment.dart';
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/entities/maintenance_feedback.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/entities/maintenance_history_entry.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/entities/maintenance_request.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/entities/maintenance_request_query.dart';
@@ -173,6 +174,33 @@ class MaintenanceRequestsRepositoryImpl
       return (await _remote.getHistory(
         id,
       )).map((item) => item.toEntity()).toList(growable: false);
+    } catch (error) {
+      throw mapApiError(error);
+    }
+  }
+
+  @override
+  Future<MaintenanceFeedback?> getFeedback(String id) async {
+    try {
+      return (await _remote.getFeedback(id))?.toEntity();
+    } catch (error) {
+      throw mapApiError(error);
+    }
+  }
+
+  @override
+  Future<MaintenanceFeedback> submitFeedback(
+    String id,
+    int rating,
+    String? comment,
+  ) async {
+    try {
+      final normalized = comment?.trim();
+      return (await _remote.submitFeedback(
+        id,
+        rating,
+        normalized == null || normalized.isEmpty ? null : normalized,
+      )).toEntity();
     } catch (error) {
       throw mapApiError(error);
     }

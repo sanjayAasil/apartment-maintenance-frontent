@@ -34,6 +34,10 @@ String maintenanceHistoryDescription(MaintenanceHistoryEntry entry) {
     case MaintenanceHistoryAction.partRemoved:
       return '${metadata['quantity'] ?? ''} ${metadata['partName'] ?? 'part'} removed'
           .trim();
+    case MaintenanceHistoryAction.feedbackSubmitted:
+      return metadata['rating'] == null
+          ? 'Maintenance feedback submitted'
+          : 'Maintenance feedback submitted · ${metadata['rating']}/5 stars';
     case MaintenanceHistoryAction.unknown:
       return 'Request updated';
   }

@@ -104,6 +104,8 @@ import 'package:apartment_maintenance_frontent/features/maintenance_requests/dom
     as _i230;
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/usecases/get_maintenance_requests.dart'
     as _i376;
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/usecases/maintenance_feedback_usecases.dart'
+    as _i276;
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/usecases/maintenance_work_usecases.dart'
     as _i609;
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/usecases/reassign_technician.dart'
@@ -118,6 +120,8 @@ import 'package:apartment_maintenance_frontent/features/maintenance_requests/pre
     as _i130;
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/bloc/maintenance_comments_cubit.dart'
     as _i435;
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/bloc/maintenance_feedback_cubit.dart'
+    as _i649;
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/bloc/maintenance_history_cubit.dart'
     as _i1018;
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/bloc/maintenance_request_details_bloc.dart'
@@ -388,6 +392,16 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1061.MaintenanceRequestsRepository>(),
       ),
     );
+    gh.factory<_i276.GetMaintenanceFeedback>(
+      () => _i276.GetMaintenanceFeedback(
+        gh<_i1061.MaintenanceRequestsRepository>(),
+      ),
+    );
+    gh.factory<_i276.SubmitMaintenanceFeedback>(
+      () => _i276.SubmitMaintenanceFeedback(
+        gh<_i1061.MaintenanceRequestsRepository>(),
+      ),
+    );
     gh.factory<_i434.ReassignTechnician>(
       () =>
           _i434.ReassignTechnician(gh<_i1061.MaintenanceRequestsRepository>()),
@@ -403,6 +417,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i628.UpdateMaintenanceRequestStatus>(
       () => _i628.UpdateMaintenanceRequestStatus(
         gh<_i1061.MaintenanceRequestsRepository>(),
+      ),
+    );
+    gh.factory<_i649.MaintenanceFeedbackCubit>(
+      () => _i649.MaintenanceFeedbackCubit(
+        gh<_i276.GetMaintenanceFeedback>(),
+        gh<_i276.SubmitMaintenanceFeedback>(),
       ),
     );
     gh.factory<_i66.GetParts>(() => _i66.GetParts(gh<_i366.PartsRepository>()));

@@ -39,10 +39,35 @@ The NestJS `CORS_ORIGINS` setting must include the exact browser origin, includi
 CORS_ORIGINS=http://localhost:8080
 ```
 
+### Run through ngrok
+
+In the backend project, start the API and tunnel in separate terminals:
+
+```sh
+npm run start:dev
+npm run tunnel
+```
+
+Copy the HTTPS forwarding URL printed by ngrok and append `/api`:
+
+```sh
+flutter run -d chrome \
+  --dart-define=APP_ENV=development \
+  --dart-define=API_BASE_URL=https://example.ngrok-free.app/api
+```
+
+Standard ngrok domains are detected automatically and Dio sends the ngrok
+development-warning bypass header. For a custom ngrok domain, add
+`--dart-define=NGROK_SKIP_BROWSER_WARNING=true` if needed.
+
+If Flutter Web is itself hosted on a public origin, add that exact origin to
+the backend's comma-separated `CORS_ORIGINS` value.
+
 ## Environment configuration
 
 - `APP_ENV`: `development`, `staging`, or `production`; defaults to `development`.
 - `API_BASE_URL`: absolute HTTP(S) API root; defaults to `http://localhost:3000/api`.
+- `NGROK_SKIP_BROWSER_WARNING`: optional boolean override for custom ngrok domains.
 
 Invalid values fail during bootstrap with an actionable error. Example staging build:
 

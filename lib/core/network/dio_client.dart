@@ -15,7 +15,11 @@ abstract class DioModule {
         baseUrl: config.apiBaseUrl,
         connectTimeout: const Duration(seconds: 10),
         receiveTimeout: const Duration(seconds: 20),
-        headers: const {'Accept': 'application/json'},
+        headers: {
+          'Accept': 'application/json',
+          if (config.skipNgrokBrowserWarning)
+            'ngrok-skip-browser-warning': 'true',
+        },
       ),
     );
     dio.interceptors.add(RequestDefaultsInterceptor());

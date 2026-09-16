@@ -15,6 +15,7 @@ enum MaintenanceHistoryAction {
   workNoteUpdated('WORK_NOTE_UPDATED', 'Work note updated'),
   partAdded('PART_ADDED', 'Part added'),
   partRemoved('PART_REMOVED', 'Part removed'),
+  feedbackSubmitted('FEEDBACK_SUBMITTED', 'Feedback submitted'),
   unknown('UNKNOWN', 'Request updated');
 
   const MaintenanceHistoryAction(this.apiValue, this.label);

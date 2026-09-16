@@ -1,6 +1,7 @@
 import 'package:apartment_maintenance_frontent/core/constants/api_paths.dart';
 import 'package:apartment_maintenance_frontent/core/error/failure.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/data/models/maintenance_activity_models.dart';
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/data/models/maintenance_feedback_model.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/data/models/maintenance_request_model.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/data/models/maintenance_work_models.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/entities/maintenance_request.dart';
@@ -44,6 +45,12 @@ abstract interface class MaintenanceRequestsRemoteDataSource {
   Future<List<MaintenanceCommentModel>> getComments(String id);
   Future<MaintenanceCommentModel> addComment(String id, String message);
   Future<List<MaintenanceHistoryEntryModel>> getHistory(String id);
+  Future<MaintenanceFeedbackModel?> getFeedback(String id);
+  Future<MaintenanceFeedbackModel> submitFeedback(
+    String id,
+    int rating,
+    String? comment,
+  );
   Future<MaintenanceWorkNoteModel?> getWorkNote(String id);
   Future<MaintenanceWorkNoteModel> createWorkNote(
     String id,
@@ -235,6 +242,32 @@ class MaintenanceRequestsRemoteDataSourceImpl
         'maintenance history',
         MaintenanceHistoryEntryModel.fromJson,
       );
+
+  @override
+  Future<MaintenanceFeedbackModel?> getFeedback(String id) async {
+    var value = (await _dio.get<dynamic>(
+      ApiPaths.maintenanceRequestFeedback(id),
+    )).data;
+    if (value is Map && value.containsKey('data')) value = value['data'];
+    if (value == null) return null;
+    if (value is! Map) throw _malformed('maintenance feedback');
+    return MaintenanceFeedbackModel.fromJson(Map<String, dynamic>.from(value));
+  }
+
+  @override
+  Future<MaintenanceFeedbackModel> submitFeedback(
+    String id,
+    int rating,
+    String? comment,
+  ) async {
+    var value = (await _dio.post<dynamic>(
+      ApiPaths.maintenanceRequestFeedback(id),
+      data: {'rating': rating, 'comment': ?comment},
+    )).data;
+    if (value is Map && value['data'] != null) value = value['data'];
+    if (value is! Map) throw _malformed('maintenance feedback');
+    return MaintenanceFeedbackModel.fromJson(Map<String, dynamic>.from(value));
+  }
 
   @override
   Future<MaintenanceWorkNoteModel?> getWorkNote(String id) async {

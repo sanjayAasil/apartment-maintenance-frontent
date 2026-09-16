@@ -42,6 +42,8 @@ abstract final class ApiPaths {
       '/maintenance-requests/$id/comments';
   static String maintenanceRequestHistory(String id) =>
       '/maintenance-requests/$id/history';
+  static String maintenanceRequestFeedback(String id) =>
+      '/maintenance-requests/$id/feedback';
   static String maintenanceRequestWorkNotes(String id) =>
       '/maintenance-requests/$id/work-notes';
   static String maintenanceRequestWorkNote(String id, String noteId) =>

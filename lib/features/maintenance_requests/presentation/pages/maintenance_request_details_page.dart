@@ -7,11 +7,13 @@ import 'package:apartment_maintenance_frontent/features/auth/presentation/bloc/a
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/entities/maintenance_request.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/bloc/maintenance_assignment_cubit.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/bloc/maintenance_comments_cubit.dart';
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/bloc/maintenance_feedback_cubit.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/bloc/maintenance_history_cubit.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/bloc/maintenance_request_details_bloc.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/bloc/maintenance_request_form_cubit.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/bloc/maintenance_work_cubit.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/widgets/maintenance_activity_sections.dart';
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/widgets/maintenance_feedback_section.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/widgets/maintenance_work_sections.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,6 +34,7 @@ class MaintenanceRequestDetailsPage extends StatelessWidget {
       BlocProvider(create: (_) => getIt<MaintenanceAssignmentCubit>()),
       BlocProvider(create: (_) => getIt<MaintenanceCommentsCubit>()),
       BlocProvider(create: (_) => getIt<MaintenanceHistoryCubit>()),
+      BlocProvider(create: (_) => getIt<MaintenanceFeedbackCubit>()),
       BlocProvider(create: (_) => getIt<MaintenanceWorkCubit>()),
     ],
     child: BlocListener<MaintenanceAssignmentCubit, MaintenanceAssignmentState>(
@@ -193,6 +196,14 @@ class MaintenanceRequestDetailsView extends StatelessWidget {
                           request.status ==
                               MaintenanceRequestStatus.closed) ...[
                         MaintenanceWorkSections(request: request, user: user),
+                        const SizedBox(height: 20),
+                      ],
+                      if (request.status ==
+                          MaintenanceRequestStatus.closed) ...[
+                        MaintenanceFeedbackSection(
+                          requestId: request.id,
+                          user: user,
+                        ),
                         const SizedBox(height: 20),
                       ],
                       MaintenanceActivitySections(requestId: request.id),

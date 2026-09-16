@@ -1,4 +1,5 @@
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/entities/maintenance_comment.dart';
+import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/entities/maintenance_feedback.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/entities/maintenance_history_entry.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/entities/maintenance_request.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/entities/maintenance_request_query.dart';
@@ -39,6 +40,12 @@ abstract interface class MaintenanceRequestsRepository {
   Future<List<MaintenanceComment>> getComments(String id);
   Future<MaintenanceComment> addComment(String id, String message);
   Future<List<MaintenanceHistoryEntry>> getHistory(String id);
+  Future<MaintenanceFeedback?> getFeedback(String id);
+  Future<MaintenanceFeedback> submitFeedback(
+    String id,
+    int rating,
+    String? comment,
+  );
   Future<MaintenanceWorkNote?> getWorkNote(String id);
   Future<MaintenanceWorkNote> createWorkNote({
     required String id,

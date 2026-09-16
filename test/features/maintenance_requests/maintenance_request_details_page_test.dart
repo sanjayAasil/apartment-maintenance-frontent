@@ -181,6 +181,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Assign technician'), findsOneWidget);
     expect(find.text('Send'), findsOneWidget);
+    expect(find.text('Rate Maintenance Service'), findsNothing);
 
     await tester.pumpWidget(app(residentUser, maintenanceRequest));
     await tester.pumpAndSettle();
