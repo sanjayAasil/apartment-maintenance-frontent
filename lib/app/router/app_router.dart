@@ -7,6 +7,7 @@ import 'package:apartment_maintenance_frontent/features/apartments/presentation/
 import 'package:apartment_maintenance_frontent/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:apartment_maintenance_frontent/features/auth/presentation/pages/login_page.dart';
 import 'package:apartment_maintenance_frontent/features/auth/presentation/pages/register_page.dart';
+import 'package:apartment_maintenance_frontent/features/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_categories/presentation/pages/maintenance_categories_page.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_categories/presentation/pages/maintenance_category_form_page.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/pages/maintenance_request_details_page.dart';
@@ -51,8 +52,9 @@ GoRouter createRouter(AuthBloc authBloc) {
       ShellRoute(
         builder: (context, state, child) => AppShell(child: child),
         routes: [
+          GoRoute(path: '/', builder: (context, state) => const OverviewPage()),
           GoRoute(
-            path: '/',
+            path: '/dashboard',
             builder: (context, state) => const DashboardPage(),
           ),
           GoRoute(

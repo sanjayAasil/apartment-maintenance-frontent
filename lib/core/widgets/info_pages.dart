@@ -10,8 +10,8 @@ class StartupPage extends StatelessWidget {
       const Scaffold(body: Center(child: CircularProgressIndicator()));
 }
 
-class DashboardPage extends StatelessWidget {
-  const DashboardPage({super.key});
+class OverviewPage extends StatelessWidget {
+  const OverviewPage({super.key});
   @override
   Widget build(BuildContext context) {
     final user = context.select((AuthBloc bloc) => bloc.state.user)!;

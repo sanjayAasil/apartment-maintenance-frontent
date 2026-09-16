@@ -6,6 +6,27 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../helpers/fakes.dart';
 
 void main() {
+  test('dashboard is admin-only and becomes admin home', () {
+    const admin = AuthState(status: AuthStatus.authenticated, user: adminUser);
+    expect(appRedirect(admin, Uri.parse('/dashboard')), isNull);
+    expect(appRedirect(admin, Uri.parse('/')), '/dashboard');
+    for (final role in [UserRole.resident, UserRole.technician]) {
+      final user = AppUser(
+        id: 'u',
+        name: 'User',
+        email: 'u@example.com',
+        role: role,
+        isActive: true,
+      );
+      expect(
+        appRedirect(
+          AuthState(status: AuthStatus.authenticated, user: user),
+          Uri.parse('/dashboard'),
+        ),
+        '/forbidden',
+      );
+    }
+  });
   test('preserves a direct URL while restoring authentication', () {
     final redirect = appRedirect(
       const AuthState(status: AuthStatus.restoring),

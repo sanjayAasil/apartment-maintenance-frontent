@@ -60,6 +60,16 @@ import 'package:apartment_maintenance_frontent/features/auth/presentation/bloc/a
     as _i925;
 import 'package:apartment_maintenance_frontent/features/auth/presentation/bloc/registration_cubit.dart'
     as _i478;
+import 'package:apartment_maintenance_frontent/features/dashboard/data/datasources/dashboard_remote_data_source.dart'
+    as _i471;
+import 'package:apartment_maintenance_frontent/features/dashboard/data/repositories/dashboard_repository_impl.dart'
+    as _i453;
+import 'package:apartment_maintenance_frontent/features/dashboard/domain/repositories/dashboard_repository.dart'
+    as _i142;
+import 'package:apartment_maintenance_frontent/features/dashboard/domain/usecases/get_dashboard.dart'
+    as _i213;
+import 'package:apartment_maintenance_frontent/features/dashboard/presentation/bloc/dashboard_cubit.dart'
+    as _i846;
 import 'package:apartment_maintenance_frontent/features/maintenance_categories/data/datasources/maintenance_categories_remote_data_source.dart'
     as _i809;
 import 'package:apartment_maintenance_frontent/features/maintenance_categories/data/repositories/maintenance_categories_repository_impl.dart'
@@ -279,6 +289,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i321.UsersRemoteDataSource>(
       () => _i321.UsersRemoteDataSourceImpl(gh<_i361.Dio>()),
+    );
+    gh.lazySingleton<_i471.DashboardRemoteDataSource>(
+      () => _i471.DashboardRemoteDataSource(gh<_i361.Dio>()),
     );
     gh.lazySingleton<_i23.TechniciansRemoteDataSource>(
       () => _i23.TechniciansRemoteDataSourceImpl(gh<_i361.Dio>()),
@@ -525,6 +538,10 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i647.UpdateApartment>(
       () => _i647.UpdateApartment(gh<_i779.ApartmentsRepository>()),
     );
+    gh.lazySingleton<_i142.DashboardRepository>(
+      () =>
+          _i453.DashboardRepositoryImpl(gh<_i471.DashboardRemoteDataSource>()),
+    );
     gh.factory<_i874.ApartmentsListBloc>(
       () => _i874.ApartmentsListBloc(gh<_i443.GetApartments>()),
     );
@@ -660,6 +677,9 @@ extension GetItInjectableX on _i174.GetIt {
       () =>
           _i469.MaintenanceRequestsListBloc(gh<_i376.GetMaintenanceRequests>()),
     );
+    gh.factory<_i213.GetDashboard>(
+      () => _i213.GetDashboard(gh<_i142.DashboardRepository>()),
+    );
     gh.factory<_i734.ResidentDetailsBloc>(
       () => _i734.ResidentDetailsBloc(gh<_i800.GetResident>()),
     );
@@ -698,6 +718,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i640.UpdateMaintenanceCategory>(),
         gh<_i1010.UpdateMaintenanceCategoryStatus>(),
       ),
+    );
+    gh.factory<_i846.DashboardCubit>(
+      () => _i846.DashboardCubit(gh<_i213.GetDashboard>()),
     );
     return this;
   }

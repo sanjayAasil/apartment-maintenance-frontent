@@ -1,4 +1,5 @@
 abstract final class ApiPaths {
+  static String dashboardReport(String report) => '/dashboard/$report';
   static const login = '/auth/login';
   static const register = '/auth/register';
   static const me = '/auth/me';

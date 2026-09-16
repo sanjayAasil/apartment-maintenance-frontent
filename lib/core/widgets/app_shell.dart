@@ -22,7 +22,10 @@ class AppShell extends StatelessWidget {
       return const Scaffold(body: SizedBox.shrink());
     }
     final destinations = <_Destination>[
-      const _Destination('Overview', Icons.dashboard_outlined, '/'),
+      if (RouteAccess.canViewDashboard(user))
+        const _Destination('Dashboard', Icons.dashboard_outlined, '/dashboard')
+      else
+        const _Destination('Overview', Icons.dashboard_outlined, '/'),
       const _Destination('Apartments', Icons.apartment_outlined, '/apartments'),
       if (RouteAccess.canManageResidents(user))
         const _Destination('Residents', Icons.badge_outlined, '/residents'),

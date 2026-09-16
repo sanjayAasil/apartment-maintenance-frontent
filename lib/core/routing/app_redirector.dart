@@ -26,6 +26,13 @@ String? appRedirect(AuthState auth, Uri uri) {
   if (path == '/startup' || public) {
     return _safeDestination(uri.queryParameters['from']) ?? '/';
   }
+  if (path.startsWith('/dashboard') &&
+      !RouteAccess.canViewDashboard(auth.user)) {
+    return '/forbidden';
+  }
+  if (path == '/' && RouteAccess.canViewDashboard(auth.user)) {
+    return '/dashboard';
+  }
   if (path.startsWith('/users') && !RouteAccess.canManageUsers(auth.user)) {
     return '/forbidden';
   }
