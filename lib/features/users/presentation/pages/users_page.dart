@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:apartment_maintenance_frontent/app/di/injection.dart';
+import 'package:apartment_maintenance_frontent/core/widgets/design_widgets.dart';
 import 'package:apartment_maintenance_frontent/core/widgets/pagination_bar.dart';
 import 'package:apartment_maintenance_frontent/core/widgets/state_views.dart';
 import 'package:apartment_maintenance_frontent/features/auth/domain/entities/app_user.dart';
@@ -40,7 +41,10 @@ class _UsersViewState extends State<_UsersView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text('Users', style: Theme.of(context).textTheme.headlineMedium),
+              const SectionHeader(
+                title: 'Users',
+                subtitle: 'Manage accounts, roles and access.',
+              ),
               const SizedBox(height: 20),
               _filters(context, state),
               const SizedBox(height: 16),
@@ -190,8 +194,6 @@ class _StatusChip extends StatelessWidget {
   const _StatusChip({required this.active});
   final bool active;
   @override
-  Widget build(BuildContext context) => Chip(
-    avatar: Icon(active ? Icons.check_circle : Icons.block, size: 18),
-    label: Text(active ? 'Active' : 'Inactive'),
-  );
+  Widget build(BuildContext context) =>
+      StatusChip(active ? 'Active' : 'Inactive');
 }

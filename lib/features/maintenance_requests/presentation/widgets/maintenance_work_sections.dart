@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:apartment_maintenance_frontent/app/theme/app_colors.dart';
 import 'package:apartment_maintenance_frontent/features/auth/domain/entities/app_user.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/entities/maintenance_request.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/entities/maintenance_work.dart';
@@ -180,6 +181,7 @@ class _MaintenanceWorkSectionsState extends State<MaintenanceWorkSections> {
           const SizedBox(height: 12),
           if (state.cost != null)
             Card(
+              color: AppTone.blue.background,
               child: Padding(
                 padding: const EdgeInsets.all(20),
                 child: Column(

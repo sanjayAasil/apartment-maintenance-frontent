@@ -8,10 +8,30 @@ class AppLogo extends StatelessWidget {
   Widget build(BuildContext context) => Row(
     mainAxisSize: MainAxisSize.min,
     children: [
-      const Icon(Icons.apartment_rounded, size: 32),
+      Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.primary,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Icon(
+          Icons.apartment_rounded,
+          size: 24,
+          color: Theme.of(context).colorScheme.onPrimary,
+        ),
+      ),
       if (!compact) ...[
         const SizedBox(width: 10),
-        Text('Apartment Care', style: Theme.of(context).textTheme.titleLarge),
+        Flexible(
+          child: Text(
+            'Apartment Care',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontSize: 18),
+          ),
+        ),
       ],
     ],
   );

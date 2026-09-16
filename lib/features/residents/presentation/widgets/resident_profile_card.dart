@@ -1,3 +1,4 @@
+import 'package:apartment_maintenance_frontent/core/widgets/design_widgets.dart';
 import 'package:apartment_maintenance_frontent/features/residents/domain/entities/resident.dart';
 import 'package:flutter/material.dart';
 
@@ -29,6 +30,8 @@ class ResidentProfileCard extends StatelessWidget {
             style: Theme.of(context).textTheme.titleLarge,
           ),
           Text(resident.user.email, textAlign: TextAlign.center),
+          const SizedBox(height: 12),
+          Center(child: StatusChip(resident.isActive ? 'Active' : 'Inactive')),
           const SizedBox(height: 20),
           _InfoRow(label: 'Phone', value: resident.phone),
           _InfoRow(

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:apartment_maintenance_frontent/app/di/injection.dart';
+import 'package:apartment_maintenance_frontent/core/widgets/design_widgets.dart';
 import 'package:apartment_maintenance_frontent/core/widgets/state_views.dart';
 import 'package:apartment_maintenance_frontent/features/technicians/domain/entities/technician.dart';
 import 'package:apartment_maintenance_frontent/features/technicians/presentation/bloc/current_technician_cubit.dart';
@@ -99,7 +100,14 @@ class _CurrentTechnicianView extends StatelessWidget {
             'Skills: ${technician.skills.isEmpty ? 'None assigned' : technician.skills.map((skill) => skill.category.name).join(', ')}',
           ),
           const SizedBox(height: 12),
-          Text('Profile: ${technician.isActive ? 'Active' : 'Inactive'}'),
+          Wrap(
+            spacing: 8,
+            runSpacing: 4,
+            children: [
+              StatusChip(technician.isActive ? 'Active' : 'Inactive'),
+              StatusChip(technician.isAvailable ? 'Available' : 'Unavailable'),
+            ],
+          ),
           const Divider(height: 32),
           SwitchListTile(
             key: const Key('ownAvailabilitySwitch'),

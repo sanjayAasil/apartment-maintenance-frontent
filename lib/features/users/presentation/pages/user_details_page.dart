@@ -1,5 +1,6 @@
 import 'package:apartment_maintenance_frontent/app/di/injection.dart';
 import 'package:apartment_maintenance_frontent/core/utils/validators.dart';
+import 'package:apartment_maintenance_frontent/core/widgets/design_widgets.dart';
 import 'package:apartment_maintenance_frontent/core/widgets/state_views.dart';
 import 'package:apartment_maintenance_frontent/features/auth/domain/entities/app_user.dart';
 import 'package:apartment_maintenance_frontent/features/users/presentation/bloc/user_details_bloc.dart';
@@ -119,7 +120,7 @@ class _UserDetailsContent extends StatelessWidget {
                     alignment: WrapAlignment.center,
                     children: [
                       Chip(label: Text(user.role.apiValue)),
-                      Chip(label: Text(user.isActive ? 'Active' : 'Inactive')),
+                      StatusChip(user.isActive ? 'Active' : 'Inactive'),
                     ],
                   ),
                   const Divider(height: 40),

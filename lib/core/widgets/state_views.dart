@@ -1,3 +1,4 @@
+import 'package:apartment_maintenance_frontent/app/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class LoadingView extends StatelessWidget {
@@ -5,7 +6,21 @@ class LoadingView extends StatelessWidget {
   final String label;
   @override
   Widget build(BuildContext context) => Center(
-    child: Semantics(label: label, child: const CircularProgressIndicator()),
+    child: Semantics(
+      label: label,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(
+            width: 32,
+            height: 32,
+            child: CircularProgressIndicator(strokeWidth: 3),
+          ),
+          const SizedBox(height: 16),
+          Text(label, style: Theme.of(context).textTheme.bodySmall),
+        ],
+      ),
+    ),
   );
 }
 
@@ -13,10 +28,14 @@ class EmptyView extends StatelessWidget {
   const EmptyView({
     required this.message,
     this.icon = Icons.inbox_outlined,
+    this.description,
+    this.action,
     super.key,
   });
   final String message;
   final IconData icon;
+  final String? description;
+  final Widget? action;
   @override
   Widget build(BuildContext context) => Center(
     child: Padding(
@@ -24,9 +43,29 @@ class EmptyView extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 48, color: Theme.of(context).colorScheme.outline),
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: AppTone.blue.background,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Icon(icon, size: 36, color: AppTone.blue.foreground),
+          ),
           const SizedBox(height: 12),
-          Text(message, textAlign: TextAlign.center),
+          Text(
+            message,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          if (description != null) ...[
+            const SizedBox(height: 8),
+            Text(
+              description!,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ],
+          if (action != null) ...[const SizedBox(height: 16), action!],
         ],
       ),
     ),
@@ -44,10 +83,17 @@ class ErrorView extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Icons.error_outline,
-            size: 48,
-            color: Theme.of(context).colorScheme.error,
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: AppTone.danger.background,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Icon(
+              Icons.error_outline,
+              size: 36,
+              color: AppTone.danger.foreground,
+            ),
           ),
           const SizedBox(height: 12),
           Text(message, textAlign: TextAlign.center),

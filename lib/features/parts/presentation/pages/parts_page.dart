@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:apartment_maintenance_frontent/app/di/injection.dart';
+import 'package:apartment_maintenance_frontent/core/widgets/design_widgets.dart';
 import 'package:apartment_maintenance_frontent/core/widgets/pagination_bar.dart';
 import 'package:apartment_maintenance_frontent/core/widgets/state_views.dart';
 import 'package:apartment_maintenance_frontent/features/parts/domain/entities/part.dart';
@@ -61,20 +62,14 @@ class _PartsViewState extends State<_PartsView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    'Parts Inventory',
-                    style: Theme.of(context).textTheme.headlineMedium,
-                  ),
-                ),
-                FilledButton.icon(
-                  onPressed: () => _open(context, '/parts/new'),
-                  icon: const Icon(Icons.add),
-                  label: const Text('Add part'),
-                ),
-              ],
+            SectionHeader(
+              title: 'Parts Inventory',
+              subtitle: 'Track stock levels, minimums and spare-part prices.',
+              action: FilledButton.icon(
+                onPressed: () => _open(context, '/parts/new'),
+                icon: const Icon(Icons.add),
+                label: const Text('Add part'),
+              ),
             ),
             const SizedBox(height: 18),
             Wrap(
@@ -205,8 +200,15 @@ class _PartsViewState extends State<_PartsView> {
                           (part) => Card(
                             child: ListTile(
                               title: Text(part.name),
-                              subtitle: Text(
-                                'Stock ${part.quantity} • Minimum ${part.minimumStock} • ${_money(part.unitPrice)}',
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Stock ${part.quantity} • Minimum ${part.minimumStock} • ${_money(part.unitPrice)}',
+                                  ),
+                                  const SizedBox(height: 8),
+                                  _stockChip(part),
+                                ],
                               ),
                               trailing: _actions(context, part),
                             ),
@@ -229,19 +231,9 @@ class _PartsViewState extends State<_PartsView> {
     );
   }
 
-  Widget _stockChip(Part part) => Chip(
-    label: Text(
-      !part.isActive
-          ? 'Inactive'
-          : part.isLowStock
-          ? 'LOW STOCK'
-          : 'Active',
-    ),
-    avatar: Icon(
-      part.isLowStock ? Icons.warning_amber : Icons.check_circle_outline,
-      size: 18,
-    ),
-  );
+  Widget _stockChip(Part part) => !part.isActive
+      ? const StatusChip('Inactive')
+      : StockChip(quantity: part.quantity, minimumStock: part.minimumStock);
   Widget _actions(BuildContext context, Part part) => Row(
     mainAxisSize: MainAxisSize.min,
     children: [

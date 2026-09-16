@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:apartment_maintenance_frontent/app/di/injection.dart';
+import 'package:apartment_maintenance_frontent/core/widgets/design_widgets.dart';
 import 'package:apartment_maintenance_frontent/core/widgets/pagination_bar.dart';
 import 'package:apartment_maintenance_frontent/core/widgets/state_views.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_categories/domain/entities/maintenance_category.dart';
@@ -78,21 +79,15 @@ class _MaintenanceCategoriesViewState
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'Maintenance Categories',
-                        style: Theme.of(context).textTheme.headlineMedium,
-                      ),
-                    ),
-                    FilledButton.icon(
-                      key: const Key('addCategoryButton'),
-                      onPressed: () => unawaited(_openCreate(context)),
-                      icon: const Icon(Icons.add),
-                      label: const Text('Add category'),
-                    ),
-                  ],
+                SectionHeader(
+                  title: 'Maintenance Categories',
+                  subtitle: 'Organize the types of maintenance service.',
+                  action: FilledButton.icon(
+                    key: const Key('addCategoryButton'),
+                    onPressed: () => unawaited(_openCreate(context)),
+                    icon: const Icon(Icons.add),
+                    label: const Text('Add category'),
+                  ),
                 ),
                 const SizedBox(height: 20),
                 Wrap(
@@ -295,13 +290,7 @@ class _MaintenanceCategoriesViewState
     ),
   );
 
-  Widget _statusChip(bool active) => Chip(
-    avatar: Icon(
-      active ? Icons.check_circle_outline : Icons.pause_circle_outline,
-      size: 18,
-    ),
-    label: Text(active ? 'Active' : 'Inactive'),
-  );
+  Widget _statusChip(bool active) => StatusChip(active ? 'Active' : 'Inactive');
 
   Widget _actions(BuildContext context, MaintenanceCategory category) => Row(
     mainAxisSize: MainAxisSize.min,

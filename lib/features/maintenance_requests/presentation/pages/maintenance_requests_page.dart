@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:apartment_maintenance_frontent/app/di/injection.dart';
+import 'package:apartment_maintenance_frontent/core/widgets/design_widgets.dart';
 import 'package:apartment_maintenance_frontent/core/widgets/pagination_bar.dart';
 import 'package:apartment_maintenance_frontent/core/widgets/state_views.dart';
 import 'package:apartment_maintenance_frontent/features/auth/domain/entities/app_user.dart';
@@ -61,25 +62,22 @@ class _MaintenanceRequestsViewState extends State<_MaintenanceRequestsView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    resident
-                        ? 'My Maintenance Requests'
-                        : technician
-                        ? 'My Jobs'
-                        : 'Maintenance Requests',
-                    style: Theme.of(context).textTheme.headlineMedium,
-                  ),
-                ),
-                if (resident)
-                  FilledButton.icon(
-                    onPressed: () => context.go('/maintenance-requests/new'),
-                    icon: const Icon(Icons.add),
-                    label: const Text('New request'),
-                  ),
-              ],
+            SectionHeader(
+              title: resident
+                  ? 'My Maintenance Requests'
+                  : technician
+                  ? 'My Jobs'
+                  : 'Maintenance Requests',
+              subtitle: technician
+                  ? 'Your assigned work, priorities and progress.'
+                  : 'Track maintenance issues from request to completion.',
+              action: resident
+                  ? FilledButton.icon(
+                      onPressed: () => context.go('/maintenance-requests/new'),
+                      icon: const Icon(Icons.add),
+                      label: const Text('New request'),
+                    )
+                  : null,
             ),
             const SizedBox(height: 20),
             Wrap(
@@ -242,38 +240,52 @@ class _MaintenanceRequestsViewState extends State<_MaintenanceRequestsView> {
                 if (constraints.maxWidth >= 900) {
                   return SingleChildScrollView(
                     physics: const AlwaysScrollableScrollPhysics(),
-                    child: SizedBox(
-                      width: constraints.maxWidth,
-                      child: DataTable(
-                        columns: const [
-                          DataColumn(label: Text('Request')),
-                          DataColumn(label: Text('Category')),
-                          DataColumn(label: Text('Apartment')),
-                          DataColumn(label: Text('Priority')),
-                          DataColumn(label: Text('Status')),
-                          DataColumn(label: Text('Resident')),
-                        ],
-                        rows: result.items
-                            .map(
-                              (item) => DataRow(
-                                onSelectChanged: (_) => context.go(
-                                  '/maintenance-requests/${item.id}',
-                                ),
-                                cells: [
-                                  DataCell(Text(item.title)),
-                                  DataCell(Text(item.category.name)),
-                                  DataCell(
-                                    Text(
-                                      '${item.apartment.block}-${item.apartment.unitNumber}',
-                                    ),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: SizedBox(
+                        width: constraints.maxWidth < 1100
+                            ? 1100
+                            : constraints.maxWidth,
+                        child: DataTable(
+                          columns: const [
+                            DataColumn(label: Text('Request')),
+                            DataColumn(label: Text('Category')),
+                            DataColumn(label: Text('Apartment')),
+                            DataColumn(label: Text('Priority')),
+                            DataColumn(label: Text('Status')),
+                            DataColumn(label: Text('Resident')),
+                          ],
+                          rows: result.items
+                              .map(
+                                (item) => DataRow(
+                                  onSelectChanged: (_) => context.go(
+                                    '/maintenance-requests/${item.id}',
                                   ),
-                                  DataCell(_chip(item.priority.label)),
-                                  DataCell(_chip(item.status.label)),
-                                  DataCell(Text(item.resident.user.name)),
-                                ],
-                              ),
-                            )
-                            .toList(),
+                                  cells: [
+                                    DataCell(
+                                      SizedBox(
+                                        width: 240,
+                                        child: Text(
+                                          item.title,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ),
+                                    DataCell(Text(item.category.name)),
+                                    DataCell(
+                                      Text(
+                                        '${item.apartment.block}-${item.apartment.unitNumber}',
+                                      ),
+                                    ),
+                                    DataCell(PriorityChip(item.priority.label)),
+                                    DataCell(StatusChip(item.status.label)),
+                                    DataCell(Text(item.resident.user.name)),
+                                  ],
+                                ),
+                              )
+                              .toList(),
+                        ),
                       ),
                     ),
                   );
@@ -289,8 +301,30 @@ class _MaintenanceRequestsViewState extends State<_MaintenanceRequestsView> {
                         onTap: () =>
                             context.go('/maintenance-requests/${item.id}'),
                         title: Text(item.title),
-                        subtitle: Text(
-                          '${item.category.name} • ${item.apartment.block}-${item.apartment.unitNumber}\n${item.priority.label} • ${item.status.label}',
+                        leading: const CircleAvatar(
+                          child: Icon(Icons.build_outlined),
+                        ),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${item.category.name} • ${item.apartment.block}-${item.apartment.unitNumber}',
+                            ),
+                            if (item.activeAssignment != null)
+                              Text(
+                                'Assigned ${item.activeAssignment!.assignedAt.toLocal().toString().split('.').first}',
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            const SizedBox(height: 8),
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 4,
+                              children: [
+                                PriorityChip(item.priority.label),
+                                StatusChip(item.status.label),
+                              ],
+                            ),
+                          ],
                         ),
                         isThreeLine: true,
                         trailing: const Icon(Icons.chevron_right),
@@ -320,7 +354,6 @@ class _MaintenanceRequestsViewState extends State<_MaintenanceRequestsView> {
     );
   }
 
-  Widget _chip(String label) => Chip(label: Text(label));
   Future<void> _refresh(BuildContext context) async {
     context.read<MaintenanceRequestsListBloc>().add(
       const MaintenanceRequestsRequested(),

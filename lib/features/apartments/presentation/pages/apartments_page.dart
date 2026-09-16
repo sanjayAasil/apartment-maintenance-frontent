@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:apartment_maintenance_frontent/app/di/injection.dart';
 import 'package:apartment_maintenance_frontent/core/routing/route_access.dart';
+import 'package:apartment_maintenance_frontent/core/widgets/design_widgets.dart';
 import 'package:apartment_maintenance_frontent/core/widgets/pagination_bar.dart';
 import 'package:apartment_maintenance_frontent/core/widgets/state_views.dart';
 import 'package:apartment_maintenance_frontent/features/apartments/domain/entities/apartment.dart';
@@ -46,24 +47,20 @@ class _ApartmentsViewState extends State<_ApartmentsView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      'Apartments',
-                      style: Theme.of(context).textTheme.headlineMedium,
-                    ),
-                  ),
-                  if (RouteAccess.canManageApartments(
-                    context.select((AuthBloc bloc) => bloc.state.user),
-                  ))
-                    FilledButton.icon(
-                      key: const Key('addApartmentButton'),
-                      onPressed: () => unawaited(_openCreate(context)),
-                      icon: const Icon(Icons.add),
-                      label: const Text('Add apartment'),
-                    ),
-                ],
+              SectionHeader(
+                title: 'Apartments',
+                subtitle: 'Browse blocks, floors and individual units.',
+                action:
+                    RouteAccess.canManageApartments(
+                      context.select((AuthBloc bloc) => bloc.state.user),
+                    )
+                    ? FilledButton.icon(
+                        key: const Key('addApartmentButton'),
+                        onPressed: () => unawaited(_openCreate(context)),
+                        icon: const Icon(Icons.add),
+                        label: const Text('Add apartment'),
+                      )
+                    : null,
               ),
               const SizedBox(height: 20),
               Wrap(

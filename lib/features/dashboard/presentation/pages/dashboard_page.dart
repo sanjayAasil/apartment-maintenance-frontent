@@ -2,6 +2,11 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:apartment_maintenance_frontent/app/di/injection.dart';
+<<<<<<< HEAD
+=======
+import 'package:apartment_maintenance_frontent/app/theme/app_colors.dart';
+import 'package:apartment_maintenance_frontent/core/widgets/design_widgets.dart';
+>>>>>>> 066bfa2 (UI designs implementations)
 import 'package:apartment_maintenance_frontent/core/widgets/state_views.dart';
 import 'package:apartment_maintenance_frontent/features/auth/domain/entities/app_user.dart';
 import 'package:apartment_maintenance_frontent/features/auth/presentation/bloc/auth_bloc.dart';
@@ -383,13 +388,24 @@ class _SummaryCards extends StatelessWidget {
   @override
   Widget build(BuildContext context) => LayoutBuilder(
     builder: (context, constraints) {
+<<<<<<< HEAD
       final columns = constraints.maxWidth >= 1100
           ? 4
           : constraints.maxWidth >= 600
+=======
+      final columns = constraints.maxWidth >= 1400
+          ? 6
+          : constraints.maxWidth >= 1000
+          ? 4
+          : constraints.maxWidth >= 700
+          ? 3
+          : constraints.maxWidth >= 320
+>>>>>>> 066bfa2 (UI designs implementations)
           ? 2
           : 1;
       final width = (constraints.maxWidth - (columns - 1) * 12) / columns;
       final values = [
+<<<<<<< HEAD
         ('Total Requests', summary.totalRequests),
         ('Open Requests', summary.openRequests),
         ('Assigned Requests', summary.assignedRequests),
@@ -401,6 +417,74 @@ class _SummaryCards extends StatelessWidget {
         ('Available Technicians', summary.availableTechnicians),
         ('Active Residents', summary.activeResidents),
         ('Low Stock Parts', summary.lowStockParts),
+=======
+        (
+          'Total Requests',
+          summary.totalRequests,
+          Icons.description_outlined,
+          AppTone.blue,
+        ),
+        (
+          'Open Requests',
+          summary.openRequests,
+          Icons.build_outlined,
+          AppTone.blue,
+        ),
+        (
+          'Assigned Requests',
+          summary.assignedRequests,
+          Icons.assignment_ind_outlined,
+          AppTone.purple,
+        ),
+        (
+          'In Progress',
+          summary.inProgressRequests,
+          Icons.schedule,
+          AppTone.warning,
+        ),
+        (
+          'Urgent Requests',
+          summary.urgentRequests,
+          Icons.priority_high_rounded,
+          AppTone.danger,
+        ),
+        (
+          'Resolved Today',
+          summary.resolvedToday,
+          Icons.task_alt,
+          AppTone.success,
+        ),
+        (
+          'Closed This Month',
+          summary.closedThisMonth,
+          Icons.check_circle_outline,
+          AppTone.success,
+        ),
+        (
+          'Active Technicians',
+          summary.activeTechnicians,
+          Icons.engineering_outlined,
+          AppTone.info,
+        ),
+        (
+          'Available Technicians',
+          summary.availableTechnicians,
+          Icons.person_pin_outlined,
+          AppTone.purple,
+        ),
+        (
+          'Active Residents',
+          summary.activeResidents,
+          Icons.people_outline,
+          AppTone.info,
+        ),
+        (
+          'Low Stock Parts',
+          summary.lowStockParts,
+          Icons.inventory_2_outlined,
+          AppTone.warning,
+        ),
+>>>>>>> 066bfa2 (UI designs implementations)
       ];
       return Wrap(
         spacing: 12,
@@ -409,6 +493,7 @@ class _SummaryCards extends StatelessWidget {
             .map(
               (item) => SizedBox(
                 width: width,
+<<<<<<< HEAD
                 child: Card(
                   child: Padding(
                     padding: const EdgeInsets.all(20),
@@ -424,6 +509,13 @@ class _SummaryCards extends StatelessWidget {
                       ],
                     ),
                   ),
+=======
+                child: SummaryCard(
+                  title: item.$1,
+                  value: '${item.$2}',
+                  icon: item.$3,
+                  tone: item.$4,
+>>>>>>> 066bfa2 (UI designs implementations)
                 ),
               ),
             )

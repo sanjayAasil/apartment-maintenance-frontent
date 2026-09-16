@@ -1,3 +1,4 @@
+import 'package:apartment_maintenance_frontent/app/theme/app_colors.dart';
 import 'package:apartment_maintenance_frontent/core/routing/route_access.dart';
 import 'package:apartment_maintenance_frontent/core/widgets/app_logo.dart';
 import 'package:apartment_maintenance_frontent/features/auth/domain/entities/app_user.dart';
@@ -29,6 +30,18 @@ class AppShell extends StatelessWidget {
       const _Destination('Apartments', Icons.apartment_outlined, '/apartments'),
       if (RouteAccess.canManageResidents(user))
         const _Destination('Residents', Icons.badge_outlined, '/residents'),
+      if (RouteAccess.canViewMaintenanceRequests(user))
+        _Destination(
+          user.role == UserRole.resident
+              ? 'My Requests'
+              : user.role == UserRole.technician
+              ? 'My Jobs'
+              : 'Requests',
+          Icons.build_circle_outlined,
+          user.role == UserRole.technician
+              ? '/technician/jobs'
+              : '/maintenance-requests',
+        ),
       if (RouteAccess.canManageMaintenanceCategories(user))
         const _Destination(
           'Categories',
@@ -43,18 +56,6 @@ class AppShell extends StatelessWidget {
         ),
       if (RouteAccess.canManageParts(user))
         const _Destination('Parts', Icons.inventory_2_outlined, '/parts'),
-      if (RouteAccess.canViewMaintenanceRequests(user))
-        _Destination(
-          user.role == UserRole.resident
-              ? 'My Requests'
-              : user.role == UserRole.technician
-              ? 'My Jobs'
-              : 'Requests',
-          Icons.build_circle_outlined,
-          user.role == UserRole.technician
-              ? '/technician/jobs'
-              : '/maintenance-requests',
-        ),
       if (RouteAccess.canViewOwnResidentProfile(user))
         const _Destination(
           'My Apartment',
@@ -81,15 +82,47 @@ class AppShell extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: wide ? null : const AppLogo(),
+        title: Text(
+          selected < 0 ? 'Apartment Care' : destinations[selected].label,
+        ),
         actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Center(child: Text(user.name)),
-          ),
+          if (MediaQuery.sizeOf(context).width >= 500)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 200),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      user.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.labelLarge,
+                    ),
+                    Text(
+                      user.role.apiValue,
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
+                ),
+              ),
+            ),
           PopupMenuButton<String>(
             tooltip: 'Account menu',
-            icon: const Icon(Icons.account_circle_outlined),
+            icon: CircleAvatar(
+              radius: 18,
+              backgroundColor: AppTone.purple.background,
+              foregroundColor: AppTone.purple.foreground,
+              child: Text(
+                user.name.isEmpty ? '?' : user.name[0].toUpperCase(),
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
             onSelected: (value) {
               if (value == 'logout') {
                 context.read<AuthBloc>().add(const AuthLogoutRequested());
@@ -98,7 +131,20 @@ class AppShell extends StatelessWidget {
             itemBuilder: (_) => [
               PopupMenuItem(enabled: false, child: Text(user.email)),
               const PopupMenuDivider(),
-              const PopupMenuItem(value: 'logout', child: Text('Sign out')),
+              PopupMenuItem(
+                value: 'logout',
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.logout,
+                      size: 18,
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                    const SizedBox(width: 12),
+                    const Text('Sign out'),
+                  ],
+                ),
+              ),
             ],
           ),
           const SizedBox(width: 8),
@@ -108,7 +154,7 @@ class AppShell extends StatelessWidget {
           ? null
           : Drawer(
               child: SafeArea(
-                child: Column(
+                child: ListView(
                   children: [
                     const Padding(
                       padding: EdgeInsets.all(20),
@@ -118,6 +164,11 @@ class AppShell extends StatelessWidget {
                     ...destinations.indexed.map(
                       (entry) => ListTile(
                         selected: selected == entry.$1,
+                        selectedColor: AppColors.primary,
+                        selectedTileColor: AppTone.blue.background,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                         leading: Icon(entry.$2.icon),
                         title: Text(entry.$2.label),
                         onTap: () {
@@ -133,23 +184,62 @@ class AppShell extends StatelessWidget {
       body: Row(
         children: [
           if (wide)
-            NavigationRail(
-              extended: MediaQuery.sizeOf(context).width >= 1180,
-              leading: const Padding(
-                padding: EdgeInsets.symmetric(vertical: 16),
-                child: AppLogo(compact: true),
-              ),
-              selectedIndex: selected < 0 ? 0 : selected,
-              onDestinationSelected: (index) =>
-                  context.go(destinations[index].path),
-              destinations: destinations
-                  .map(
-                    (item) => NavigationRailDestination(
-                      icon: Icon(item.icon),
-                      label: Text(item.label),
+            SizedBox(
+              width: 240,
+              child: Material(
+                color: Colors.white,
+                child: ListView(
+                  padding: const EdgeInsets.all(12),
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.symmetric(
+                        vertical: 20,
+                        horizontal: 8,
+                      ),
+                      child: AppLogo(),
                     ),
-                  )
-                  .toList(),
+                    const Padding(
+                      padding: EdgeInsets.fromLTRB(12, 12, 12, 16),
+                      child: Text(
+                        'WORKSPACE',
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: AppColors.muted,
+                          letterSpacing: 1.2,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    ...destinations.indexed.map(
+                      (entry) => Padding(
+                        padding: const EdgeInsets.only(bottom: 4),
+                        child: ListTile(
+                          selected: entry.$1 == selected,
+                          selectedColor: AppColors.primary,
+                          selectedTileColor: AppTone.blue.background,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                          ),
+                          leading: Icon(entry.$2.icon, size: 21),
+                          title: Text(
+                            entry.$2.label,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: entry.$1 == selected
+                                  ? FontWeight.w600
+                                  : FontWeight.w400,
+                            ),
+                          ),
+                          onTap: () => context.go(entry.$2.path),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           if (wide) const VerticalDivider(width: 1),
           Expanded(child: child),

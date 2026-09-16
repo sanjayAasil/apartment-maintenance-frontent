@@ -1,3 +1,5 @@
+import 'package:apartment_maintenance_frontent/app/theme/app_colors.dart';
+import 'package:apartment_maintenance_frontent/core/widgets/design_widgets.dart';
 import 'package:apartment_maintenance_frontent/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,9 +20,13 @@ class OverviewPage extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(24),
       children: [
-        Text('Overview', style: Theme.of(context).textTheme.headlineMedium),
+        const SectionHeader(
+          title: 'Overview',
+          subtitle: 'Your apartment maintenance workspace.',
+        ),
         const SizedBox(height: 20),
         Card(
+          color: AppTone.blue.background,
           child: Padding(
             padding: const EdgeInsets.all(24),
             child: Column(
@@ -34,8 +40,8 @@ class OverviewPage extends StatelessWidget {
                 Text('Signed in as ${user.role.apiValue.toLowerCase()}.'),
                 const SizedBox(height: 16),
                 const Text(
-                  'Apartment and maintenance modules will appear here after '
-                  'their backend contracts are available.',
+                  'Use the navigation menu to find your apartment details, '
+                  'maintenance requests and profile.',
                 ),
               ],
             ),

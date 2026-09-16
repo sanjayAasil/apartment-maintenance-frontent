@@ -8,7 +8,7 @@ class AppConfig {
   factory AppConfig.fromEnvironment() {
     const rawUrl = String.fromEnvironment(
       'API_BASE_URL',
-      defaultValue: 'http://localhost:3000/api',
+      defaultValue: 'https://unloaded-shimmy-secluding.ngrok-free.dev/api',
     );
     const environment = String.fromEnvironment(
       'APP_ENV',
@@ -30,17 +30,23 @@ class AppConfig {
     if (!{'development', 'staging', 'production'}.contains(environment)) {
       throw StateError('APP_ENV must be development, staging, or production.');
     }
-    final host = uri.host.toLowerCase();
-    final isNgrokHost =
-        host.endsWith('.ngrok-free.app') ||
-        host.endsWith('.ngrok.app') ||
-        host.endsWith('.ngrok.dev') ||
-        host.endsWith('.ngrok.io');
     return AppConfig._(
       apiBaseUrl: rawUrl.replaceFirst(RegExp(r'/+$'), ''),
       environment: environment,
-      skipNgrokBrowserWarning: forceSkipNgrokBrowserWarning || isNgrokHost,
+      skipNgrokBrowserWarning:
+          forceSkipNgrokBrowserWarning || isNgrokHost(uri.host),
     );
+  }
+
+  static bool isNgrokHost(String host) {
+    final normalizedHost = host.toLowerCase();
+    return const [
+      'ngrok-free.app',
+      'ngrok-free.dev',
+      'ngrok.app',
+      'ngrok.dev',
+      'ngrok.io',
+    ].any((domain) => normalizedHost.endsWith('.$domain'));
   }
 
   final String apiBaseUrl;

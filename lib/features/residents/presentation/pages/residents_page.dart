@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:apartment_maintenance_frontent/app/di/injection.dart';
+import 'package:apartment_maintenance_frontent/core/widgets/design_widgets.dart';
 import 'package:apartment_maintenance_frontent/core/widgets/pagination_bar.dart';
 import 'package:apartment_maintenance_frontent/core/widgets/state_views.dart';
 import 'package:apartment_maintenance_frontent/features/residents/domain/entities/resident.dart';
@@ -43,21 +44,15 @@ class _ResidentsViewState extends State<_ResidentsView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      'Residents',
-                      style: Theme.of(context).textTheme.headlineMedium,
-                    ),
-                  ),
-                  FilledButton.icon(
-                    key: const Key('addResidentButton'),
-                    onPressed: () => unawaited(_openCreate(context)),
-                    icon: const Icon(Icons.person_add_outlined),
-                    label: const Text('Add resident'),
-                  ),
-                ],
+              SectionHeader(
+                title: 'Residents',
+                subtitle: 'Resident profiles and apartment assignments.',
+                action: FilledButton.icon(
+                  key: const Key('addResidentButton'),
+                  onPressed: () => unawaited(_openCreate(context)),
+                  icon: const Icon(Icons.person_add_outlined),
+                  label: const Text('Add resident'),
+                ),
               ),
               const SizedBox(height: 20),
               Wrap(
@@ -248,9 +243,7 @@ class _ResidentTable extends StatelessWidget {
                     ),
                     DataCell(Text(formatResidentDate(resident.moveInDate))),
                     DataCell(
-                      Chip(
-                        label: Text(resident.isActive ? 'Active' : 'Inactive'),
-                      ),
+                      StatusChip(resident.isActive ? 'Active' : 'Inactive'),
                     ),
                   ],
                 ),
@@ -279,7 +272,7 @@ class _ResidentListCard extends StatelessWidget {
         '${resident.phone}',
       ),
       isThreeLine: true,
-      trailing: Chip(label: Text(resident.isActive ? 'Active' : 'Inactive')),
+      trailing: StatusChip(resident.isActive ? 'Active' : 'Inactive'),
     ),
   );
 }

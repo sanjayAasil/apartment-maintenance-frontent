@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:apartment_maintenance_frontent/app/di/injection.dart';
+import 'package:apartment_maintenance_frontent/core/widgets/design_widgets.dart';
 import 'package:apartment_maintenance_frontent/core/widgets/state_views.dart';
 import 'package:apartment_maintenance_frontent/features/auth/domain/entities/app_user.dart';
 import 'package:apartment_maintenance_frontent/features/auth/presentation/bloc/auth_bloc.dart';
@@ -107,7 +108,7 @@ class MaintenanceRequestDetailsView extends StatelessWidget {
               padding: const EdgeInsets.all(24),
               child: Center(
                 child: SizedBox(
-                  width: 900,
+                  width: 1100,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -135,10 +136,8 @@ class MaintenanceRequestDetailsView extends StatelessWidget {
                         spacing: 8,
                         runSpacing: 8,
                         children: [
-                          Chip(label: Text(request.status.label)),
-                          Chip(
-                            label: Text('${request.priority.label} priority'),
-                          ),
+                          StatusChip(request.status.label),
+                          PriorityChip(request.priority.label),
                           Chip(label: Text(request.category.name)),
                         ],
                       ),
@@ -160,28 +159,94 @@ class MaintenanceRequestDetailsView extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 12),
-                      Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: Wrap(
-                            spacing: 42,
-                            runSpacing: 20,
+                      LayoutBuilder(
+                        builder: (context, constraints) {
+                          final width = constraints.maxWidth >= 700
+                              ? (constraints.maxWidth - 16) / 2
+                              : constraints.maxWidth;
+                          return Wrap(
+                            spacing: 16,
+                            runSpacing: 16,
                             children: [
-                              _fact(
-                                'Apartment',
-                                '${request.apartment.block}-${request.apartment.unitNumber} (Floor ${request.apartment.floor})',
+                              SizedBox(
+                                width: width,
+                                child: Card(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(20),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Resident information',
+                                          style: Theme.of(
+                                            context,
+                                          ).textTheme.titleMedium,
+                                        ),
+                                        const SizedBox(height: 16),
+                                        _fact(
+                                          'Resident',
+                                          request.resident.user.name,
+                                        ),
+                                        const SizedBox(height: 12),
+                                        _fact(
+                                          'Email',
+                                          request.resident.user.email,
+                                        ),
+                                        const SizedBox(height: 12),
+                                        _fact('Phone', request.resident.phone),
+                                      ],
+                                    ),
+                                  ),
+                                ),
                               ),
-                              _fact('Resident', request.resident.user.name),
-                              _fact('Email', request.resident.user.email),
-                              _fact('Phone', request.resident.phone),
-                              _fact('Created', _date(request.createdAt)),
-                              if (request.resolvedAt != null)
-                                _fact('Resolved', _date(request.resolvedAt!)),
-                              if (request.closedAt != null)
-                                _fact('Closed', _date(request.closedAt!)),
+                              SizedBox(
+                                width: width,
+                                child: Card(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(20),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Apartment & timeline',
+                                          style: Theme.of(
+                                            context,
+                                          ).textTheme.titleMedium,
+                                        ),
+                                        const SizedBox(height: 16),
+                                        _fact(
+                                          'Apartment',
+                                          '${request.apartment.block}-${request.apartment.unitNumber} (Floor ${request.apartment.floor})',
+                                        ),
+                                        const SizedBox(height: 12),
+                                        _fact(
+                                          'Created',
+                                          _date(request.createdAt),
+                                        ),
+                                        if (request.resolvedAt != null) ...[
+                                          const SizedBox(height: 12),
+                                          _fact(
+                                            'Resolved',
+                                            _date(request.resolvedAt!),
+                                          ),
+                                        ],
+                                        if (request.closedAt != null) ...[
+                                          const SizedBox(height: 12),
+                                          _fact(
+                                            'Closed',
+                                            _date(request.closedAt!),
+                                          ),
+                                        ],
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ],
-                          ),
-                        ),
+                          );
+                        },
                       ),
                       const SizedBox(height: 20),
                       if (user?.role == UserRole.admin)
@@ -268,10 +333,20 @@ class MaintenanceRequestDetailsView extends StatelessWidget {
       children: targets
           .map(
             (status) => FilledButton.tonalIcon(
+              style: FilledButton.styleFrom(
+                backgroundColor: status == MaintenanceRequestStatus.cancelled
+                    ? Theme.of(context).colorScheme.error
+                    : Theme.of(context).colorScheme.primary,
+                foregroundColor: status == MaintenanceRequestStatus.cancelled
+                    ? Theme.of(context).colorScheme.onError
+                    : Theme.of(context).colorScheme.onPrimary,
+              ),
               onPressed: () => _confirmStatus(context, request, status),
               icon: Icon(
                 status == MaintenanceRequestStatus.cancelled
                     ? Icons.cancel_outlined
+                    : status == MaintenanceRequestStatus.inProgress
+                    ? Icons.play_arrow_rounded
                     : status == MaintenanceRequestStatus.resolved
                     ? Icons.check_circle_outline
                     : Icons.lock_outline,

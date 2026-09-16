@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:apartment_maintenance_frontent/app/theme/app_colors.dart';
 import 'package:apartment_maintenance_frontent/features/auth/domain/entities/app_user.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/domain/entities/maintenance_feedback.dart';
 import 'package:apartment_maintenance_frontent/features/maintenance_requests/presentation/bloc/maintenance_feedback_cubit.dart';
@@ -96,7 +97,7 @@ class _MaintenanceFeedbackSectionState
                             : () => setState(() => _rating = value),
                         icon: Icon(
                           value <= _rating ? Icons.star : Icons.star_border,
-                          color: Theme.of(context).colorScheme.primary,
+                          color: AppTone.warning.foreground,
                         ),
                       );
                     }),
@@ -167,7 +168,7 @@ class _FeedbackView extends StatelessWidget {
             5,
             (index) => Icon(
               index < feedback.rating ? Icons.star : Icons.star_border,
-              color: Theme.of(context).colorScheme.primary,
+              color: AppTone.warning.foreground,
             ),
           ),
         ),
@@ -177,7 +178,15 @@ class _FeedbackView extends StatelessWidget {
       Text(_date(feedback.createdAt)),
       if (feedback.comment?.isNotEmpty == true) ...[
         const SizedBox(height: 10),
-        Text(feedback.comment!),
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: AppTone.warning.background,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Text(feedback.comment!),
+        ),
       ],
     ],
   );

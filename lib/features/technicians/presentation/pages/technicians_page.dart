@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:apartment_maintenance_frontent/app/di/injection.dart';
+import 'package:apartment_maintenance_frontent/core/widgets/design_widgets.dart';
 import 'package:apartment_maintenance_frontent/core/widgets/pagination_bar.dart';
 import 'package:apartment_maintenance_frontent/core/widgets/state_views.dart';
 import 'package:apartment_maintenance_frontent/features/technicians/domain/entities/technician.dart';
@@ -67,22 +68,15 @@ class _TechniciansViewState extends State<_TechniciansView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    'Technicians',
-                    style: Theme.of(context).textTheme.headlineMedium,
-                  ),
-                ),
-                FilledButton.icon(
-                  key: const Key('addTechnicianButton'),
-                  onPressed: () =>
-                      unawaited(_open(context, '/technicians/new')),
-                  icon: const Icon(Icons.add),
-                  label: const Text('Add technician'),
-                ),
-              ],
+            SectionHeader(
+              title: 'Technicians',
+              subtitle: 'Skills, experience and service availability.',
+              action: FilledButton.icon(
+                key: const Key('addTechnicianButton'),
+                onPressed: () => unawaited(_open(context, '/technicians/new')),
+                icon: const Icon(Icons.add),
+                label: const Text('Add technician'),
+              ),
             ),
             const SizedBox(height: 20),
             Wrap(
@@ -267,8 +261,23 @@ class _TechniciansViewState extends State<_TechniciansView> {
         ),
       ),
       title: Text(technician.user.name),
-      subtitle: Text(
-        '${technician.user.email} • ${technician.phone}\n${technician.experienceYears} ${technician.experienceYears == 1 ? 'year' : 'years'} • ${technician.isAvailable ? 'Available' : 'Unavailable'} • ${technician.isActive ? 'Active' : 'Inactive'}\n${technician.skills.isEmpty ? 'No skills' : technician.skills.map((skill) => skill.category.name).join(', ')}',
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('${technician.user.email} • ${technician.phone}'),
+          Text(
+            '${technician.experienceYears} ${technician.experienceYears == 1 ? 'year' : 'years'} • ${technician.skills.isEmpty ? 'No skills' : technician.skills.map((skill) => skill.category.name).join(', ')}',
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 4,
+            children: [
+              StatusChip(technician.isAvailable ? 'Available' : 'Unavailable'),
+              StatusChip(technician.isActive ? 'Active' : 'Inactive'),
+            ],
+          ),
+        ],
       ),
       isThreeLine: true,
       trailing: PopupMenuButton<String>(
