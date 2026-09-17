@@ -2,11 +2,8 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:apartment_maintenance_frontent/app/di/injection.dart';
-<<<<<<< HEAD
-=======
 import 'package:apartment_maintenance_frontent/app/theme/app_colors.dart';
 import 'package:apartment_maintenance_frontent/core/widgets/design_widgets.dart';
->>>>>>> 066bfa2 (UI designs implementations)
 import 'package:apartment_maintenance_frontent/core/widgets/state_views.dart';
 import 'package:apartment_maintenance_frontent/features/auth/domain/entities/app_user.dart';
 import 'package:apartment_maintenance_frontent/features/auth/presentation/bloc/auth_bloc.dart';
@@ -18,12 +15,15 @@ import 'package:go_router/go_router.dart';
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     final user = context.select((AuthBloc bloc) => bloc.state.user);
+
     if (user?.role != UserRole.admin) {
       return const Center(child: Text('Access denied'));
     }
+
     return BlocProvider(
       create: (_) {
         final cubit = getIt<DashboardCubit>();
@@ -37,12 +37,14 @@ class DashboardPage extends StatelessWidget {
 
 class DashboardView extends StatelessWidget {
   const DashboardView({super.key});
+
   @override
   Widget build(
     BuildContext context,
   ) => BlocBuilder<DashboardCubit, DashboardState>(
     builder: (context, state) {
       final data = state.data;
+
       if (data == null) {
         if (state.status == DashboardStatus.failure) {
           return ErrorView(
@@ -50,8 +52,10 @@ class DashboardView extends StatelessWidget {
             onRetry: () => unawaited(context.read<DashboardCubit>().load()),
           );
         }
+
         return const LoadingView(label: 'Loading dashboard');
       }
+
       return RefreshIndicator(
         onRefresh: () => context.read<DashboardCubit>().load(),
         child: ListView(
@@ -137,6 +141,7 @@ class DashboardView extends StatelessWidget {
                 final width = constraints.maxWidth >= 760
                     ? (constraints.maxWidth - 16) / 2
                     : constraints.maxWidth;
+
                 return Wrap(
                   spacing: 16,
                   runSpacing: 16,
@@ -363,6 +368,7 @@ class DashboardView extends StatelessWidget {
         end: DateTime(range.to.year, range.to.month, range.to.day),
       ),
     );
+
     if (selection != null && context.mounted) {
       await context.read<DashboardCubit>().load(
         DashboardRange(
@@ -384,15 +390,12 @@ class DashboardView extends StatelessWidget {
 
 class _SummaryCards extends StatelessWidget {
   const _SummaryCards({required this.summary});
+
   final DashboardSummary summary;
+
   @override
   Widget build(BuildContext context) => LayoutBuilder(
     builder: (context, constraints) {
-<<<<<<< HEAD
-      final columns = constraints.maxWidth >= 1100
-          ? 4
-          : constraints.maxWidth >= 600
-=======
       final columns = constraints.maxWidth >= 1400
           ? 6
           : constraints.maxWidth >= 1000
@@ -400,24 +403,12 @@ class _SummaryCards extends StatelessWidget {
           : constraints.maxWidth >= 700
           ? 3
           : constraints.maxWidth >= 320
->>>>>>> 066bfa2 (UI designs implementations)
           ? 2
           : 1;
+
       final width = (constraints.maxWidth - (columns - 1) * 12) / columns;
+
       final values = [
-<<<<<<< HEAD
-        ('Total Requests', summary.totalRequests),
-        ('Open Requests', summary.openRequests),
-        ('Assigned Requests', summary.assignedRequests),
-        ('In Progress', summary.inProgressRequests),
-        ('Urgent Requests', summary.urgentRequests),
-        ('Resolved Today', summary.resolvedToday),
-        ('Closed This Month', summary.closedThisMonth),
-        ('Active Technicians', summary.activeTechnicians),
-        ('Available Technicians', summary.availableTechnicians),
-        ('Active Residents', summary.activeResidents),
-        ('Low Stock Parts', summary.lowStockParts),
-=======
         (
           'Total Requests',
           summary.totalRequests,
@@ -484,8 +475,8 @@ class _SummaryCards extends StatelessWidget {
           Icons.inventory_2_outlined,
           AppTone.warning,
         ),
->>>>>>> 066bfa2 (UI designs implementations)
       ];
+
       return Wrap(
         spacing: 12,
         runSpacing: 12,
@@ -493,29 +484,11 @@ class _SummaryCards extends StatelessWidget {
             .map(
               (item) => SizedBox(
                 width: width,
-<<<<<<< HEAD
-                child: Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(item.$1),
-                        const SizedBox(height: 8),
-                        Text(
-                          '${item.$2}',
-                          style: Theme.of(context).textTheme.headlineMedium,
-                        ),
-                      ],
-                    ),
-                  ),
-=======
                 child: SummaryCard(
                   title: item.$1,
                   value: '${item.$2}',
                   icon: item.$3,
                   tone: item.$4,
->>>>>>> 066bfa2 (UI designs implementations)
                 ),
               ),
             )
@@ -531,8 +504,11 @@ class _Panel extends StatelessWidget {
     required this.subtitle,
     required this.child,
   });
-  final String title, subtitle;
+
+  final String title;
+  final String subtitle;
   final Widget child;
+
   @override
   Widget build(BuildContext context) => Card(
     child: Padding(
@@ -553,15 +529,21 @@ class _Panel extends StatelessWidget {
 
 class _CountBars extends StatelessWidget {
   const _CountBars({required this.items, required this.empty});
+
   final List<(String, int)> items;
   final String empty;
+
   @override
   Widget build(BuildContext context) {
     final maximum = items.fold<int>(
       0,
       (value, item) => math.max(value, item.$2),
     );
-    if (maximum == 0) return Text(empty);
+
+    if (maximum == 0) {
+      return Text(empty);
+    }
+
     return Column(
       children: items
           .map(
@@ -597,4 +579,5 @@ Widget _value(String label, String value) => Padding(
     ],
   ),
 );
+
 String _money(double value) => '₹${value.toStringAsFixed(2)}';
